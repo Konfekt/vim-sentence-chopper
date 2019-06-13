@@ -1,13 +1,14 @@
 *Vim-SentenceWrapper*
 ======
 
-This Vim plug-in furnishes the map `gw` (as operator, for example `gwip`, or on a visual selection) that turns one sentence into one line, breaks it only at punctuation marks `.;:?!` for [better version control of prose](https://news.ycombinator.com/item?id=4642395) such as `markdown`, `tex` or `text` files.
+This Vim plug-in furnishes the map `gw` (as an operator in normal mode, for example `gwip` will format a paragraph, and in visual mode) that puts each sentence onto a single line.
+That is, lines are only broken at punctuation marks `.;:?!` for [better version control of prose](https://news.ycombinator.com/item?id=4642395) such as `markdown`, `tex` or `text` files.
 
 For example, hitting `gwip` on
 ```
   Hello! How are you? Fine; after all.
 ```
-becomes
+turns it into
 ```
   Hello!
   How are you?
