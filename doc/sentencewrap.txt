@@ -1,0 +1,28 @@
+  vim-SentenceWrapper *vim-sentencewrap* *SentenceWrapper* *sentencewrap*
+
+===========================================================================
+Usage ~
+
+This Vim plug-in furnishes the map gw (as an operator in normal mode, for
+example gwip will format a paragraph, and in visual mode) that
+
+- first normalizes Unicode Homoglyphs, and
+- then puts each sentence onto a single line.
+
+That is, lines are only broken at punctuation marks .;:?!
+Useful, in particular, for better version control of prose such as markdown,
+tex or text files.
+
+For example, hitting gwip on
+>
+  Hello! How are you? Fine; after all.
+<
+turns it into
+>
+  Hello!
+  How are you?
+  Fine;
+  after all.
+<
+
+vim:tw=78:ts=2:sts=2:sw=2:ft=help:norl
