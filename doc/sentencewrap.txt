@@ -3,8 +3,8 @@
 ===========================================================================
 Usage ~
 
-This Vim plug-in furnishes the map gw (as an operator in normal mode, for
-example gwip will format a paragraph, and in visual mode) that
+This Vim plug-in furnishes the map gw as an operator in normal mode, for
+example gwip will format a paragraph, and in visual mode that
 
 - first normalizes Unicode Homoglyphs, and
 - then puts each sentence onto a single line.
