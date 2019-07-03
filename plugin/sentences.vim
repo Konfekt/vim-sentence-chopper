@@ -24,16 +24,16 @@ let s:keepcpo         = &cpo
 set cpo&vim
 
 " ------------------------------------------------------------------------------
-command! -range=% -bar WrapSentences call sentences#wrap(<line1>, <line2>)
+command! -range=% -bar ChopSentences call sentences#chop(<line1>, <line2>)
 
-nnoremap <silent> <plug>(WrapSentences) :<C-U>set  opfunc=sentences#wrap<CR>g@
-xnoremap <silent> <plug>(WrapSentences) :<C-U>call sentences#wrap("'<", "'>")<CR>
+nnoremap <silent> <plug>(ChopSentences) :<C-U>set  opfunc=sentences#chop<CR>g@
+xnoremap <silent> <plug>(ChopSentences) :<C-U>call sentences#chop("'<", "'>")<CR>
 
-if !hasmapto('<Plug>(WrapSentences)', 'n')
-  silent! nmap <unique> gw <plug>(WrapSentences)
+if !hasmapto('<Plug>(ChopSentences)', 'n')
+  silent! nmap <unique> gw <plug>(ChopSentences)
 endif
-if !hasmapto('<Plug>(WrapSentences)', 'x')
-  silent! xmap <unique> gw <plug>(WrapSentences)
+if !hasmapto('<Plug>(ChopSentences)', 'x')
+  silent! xmap <unique> gw <plug>(ChopSentences)
 endif
 
 if hasmapto('gw', 'n')

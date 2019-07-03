@@ -3,7 +3,7 @@ This Vim plug-in furnishes
 - an operator mapping `gw` in normal mode, for example `gwip` operates on a paragraph,
 - a mapping `gww` (and `gwgw`) in normal mode that operates on a single line,
 - a mapping `gw` that operates on the visual selection, and
-- a command `WrapSentences` that operates on given range (equal to the whole buffer if unspecified)
+- a command `ChopSentences` that operates on given range (equal to the whole buffer if unspecified)
 
 that put each sentence onto a single line.
 
@@ -31,13 +31,13 @@ turns it into
 To change mappings, for example, to use `zy` instead of `gw`, add the lines
 
 ```vim
-    nmap zy <plug>(WrapSentences)
-    xmap zy <plug>(WrapSentences)
+    nmap zy <plug>(ChopSentences)
+    xmap zy <plug>(ChopSentences)
 ```
 
 to your `vimrc`.
 
 # Related
 
-To normalize [Unicode Homoglyphs](https://www.irongeek.com/homoglyph-attack-generator.php), for example, of white spaces and punctuation marks, before wrapping sentences, see the Vim plug-in [vim-unicode-homoglyphs](https://github.com/Konfekt/vim-unicode-homoglyphs) that highlights and normalizes Unicode homoglyphs.
+To normalize [Unicode Homoglyphs](https://www.irongeek.com/homoglyph-attack-generator.php), for example, of white spaces and punctuation marks, before chopping sentences, see the Vim plug-in [vim-unicode-homoglyphs](https://github.com/Konfekt/vim-unicode-homoglyphs) that highlights and normalizes Unicode homoglyphs.
 

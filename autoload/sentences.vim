@@ -1,6 +1,6 @@
 scriptencoding uft-8
 
-function! sentences#wrap(...) abort
+function! sentences#chop(...) abort
   normal! m`
 
   if a:0 == 2
@@ -14,12 +14,12 @@ function! sentences#wrap(...) abort
     let close = "']"
   endif
 
-  call s:wrap(open, close)
+  call s:chop(open, close)
 
   normal! g``
 endfunction
 
-function! s:wrap(o,c) abort
+function! s:chop(o,c) abort
   let o = a:o
   let c = a:c
 

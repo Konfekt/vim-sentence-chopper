@@ -1,4 +1,4 @@
-  vim-SentenceWrapper *vim-sentencewrap* *SentenceWrapper* *sentencewrap*
+  vim-SentenceChopper *vim-sentencechop* *SentenceChopper* *sentencechop*
 
 ===========================================================================
 Intro ~
@@ -9,7 +9,7 @@ This Vim plug-in furnishes
   paragraph,
 - a mapping gww (and gwgw) in normal mode that operates on a single line,
 - a mapping gw that operates on the visual selection, and
-- a command WrapSentences that operates on given range (equal to the whole
+- a command ChopSentences that operates on given range (equal to the whole
   buffer if unspecified)
 
 that put each sentence onto a single line.
@@ -39,8 +39,8 @@ Configuration ~
 To change mappings, for example, to use zy instead of gw, add the lines
 
 >
-    nmap zy <plug>(WrapSentences)
-    xmap zy <plug>(WrapSentences)
+    nmap zy <plug>(ChopSentences)
+    xmap zy <plug>(ChopSentences)
 <
 
 to your vimrc.
@@ -48,7 +48,7 @@ to your vimrc.
 Related ~
 
 To normalize Unicode Homoglyphs, for example, of white spaces and punctuation
-marks, before wrapping sentences, see the Vim plug-in vim-unicode-homoglyphs
+marks, before chopping sentences, see the Vim plug-in vim-unicode-homoglyphs
 that highlights and normalizes Unicode homoglyphs.
 
 vim:tw=78:ts=2:sts=2:sw=2:ft=help:norl
