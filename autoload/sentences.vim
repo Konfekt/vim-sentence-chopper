@@ -23,23 +23,32 @@ function! s:chop(o,c) abort
   let o = a:o
   let c = a:c
 
-  let tw=&l:textwidth
-  let fo=&l:formatoptions
-  setlocal textwidth=999999
-  setlocal formatoptions&
+  if !executable('latexindent')
+    let tw=&l:textwidth
+    let fo=&l:formatoptions
+    setlocal textwidth=999999
+    setlocal formatoptions&
 
-  exe 'normal! ' . o . 'gw' . c
+    exe 'normal! ' . o . 'gw' . c
 
-  let &l:textwidth=tw
-  let &l:formatoptions=fo
+    let &l:textwidth=tw
+    let &l:formatoptions=fo
 
-  let gdefault = &gdefault
-  set gdefault&
+    let gdefault = &gdefault
+    set gdefault&
 
-  let subst = '\C\v(%(%([^[:digit:][:lower:][:upper:]]|[[:digit:]]{3,}|[[:lower:]]{2,}|[[:upper:]]{2,})[.]|[;:?!])\)?)\s+/\1\r'
-  exe o . ',' . c . 'substitute/' . subst . '/geI'
+    let subst = '\C\v(%(%([^[:digit:][:lower:][:upper:]]|[[:digit:]]{3,}|[[:lower:]]{2,}|[[:upper:]]{2,})[.]|[;:?!])\)?)\s+/\1\r'
+    silent exe o . ',' . c . 'substitute/' . subst . '/geI'
 
-  let &gdefault = gdefault
+    let &gdefault = gdefault
+  else
+    let equalprg = &equalprg
+    let &l:equalprg = 'latexindent -modifylinebreaks --yaml="modifyLineBreaks:oneSentencePerLine:manipulateSentences:1"'
 
-  exe 'normal! ' . o . '=' . c
+    exe 'normal! ' . o . '=' . c
+
+    let &l:equalprg = equalprg
+  endif
+
+  silent exe 'normal! ' . o . '=' . c
 endfunction

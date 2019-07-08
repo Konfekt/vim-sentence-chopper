@@ -9,6 +9,9 @@ that put each sentence onto a single line.
 
 That is, lines are only broken at punctuation marks `.;:?!` for [better version control of prose](https://news.ycombinator.com/item?id=4642395) such as `markdown`, `tex` or `text` files.
 
+For best results, ensure that [latexindent](https://github.com/cmhughes/latexindent.pl) is installed and the folder that contains its executable is listed in `$PATH` (respectively in `%PATH%` on Microsoft Windows).
+This formatter will also distinguish `TeX` markup (but of no other file types) from prose to preserve syntactic line breaks.
+
 # Usage
 
 For example, hitting `gwip` on
