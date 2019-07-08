@@ -7,10 +7,10 @@ This Vim plug-in furnishes
 
 that put each sentence onto a single line.
 
-That is, lines are only broken at punctuation marks `.;:?!` for [better version control of prose](https://news.ycombinator.com/item?id=4642395) such as `markdown`, `tex` or `text` files.
+That is, lines are only broken at punctuation marks `.;:?!` (customizable by the variable `g:punctuation_marks`) for [better version control of prose](https://news.ycombinator.com/item?id=4642395) such as `markdown`, `tex` or `text` files.
 
 For best results, ensure that [latexindent](https://github.com/cmhughes/latexindent.pl) is installed and the folder that contains its executable is listed in `$PATH` (respectively in `%PATH%` on Microsoft Windows).
-This formatter will also distinguish `TeX` markup (but of no other file types) from prose to preserve syntactic line breaks.
+This formatter will also distinguish `TeX` markup from prose to preserve syntactic line breaks.
 
 # Usage
 
@@ -30,6 +30,47 @@ turns it into
 ```
 
 # Configuration
+
+The variable `g:punctuation_marks` defines punctuation marks at which sentences are split up;
+it is by default set to
+
+```vim
+  let g:punctuation_marks = '.?!'
+```
+
+The variable `g:latexindent` defines whether [latexindent](https://github.com/cmhughes/latexindent.pl) should be used by default;
+it is by default set to
+
+```vim
+  let g:latexindent = 1
+```
+
+The variable `g:latexindent_options` defines the command-line options passed to `latexindent` as listed by `latexindent -h`;
+it is by default set to
+
+```vim
+  let g:latexindent_options = ''
+```
+
+The variable `g:latexindent_yaml_options` defines the  [documented](http://ctan.uib.no/support/latexindent/documentation/latexindent.pdf) [YAML](https://en.wikipedia.org/wiki/YAML) options passed to `latexindent`;
+it is by default set to
+
+```vim
+  let g:latexindent_yaml_options = ''
+```
+
+For example, to split up sentences after `.` or `;` or `:` instead of `.` or `?` or `!`, and put every sentence in parentheses onto its proper line, add to your `vimrc`
+
+```vim
+let g:latexindent_yaml_options = 'modifyLineBreaks:oneSentencePerLine:sentencesEndWith:'
+       \ . 'other: \;|\:' . ';'
+       \ . 'questionMark: 0' . ';'
+       \ . 'exclamationMark: 0' . ','
+       \ . 'modifyLineBreaks:oneSentencePerLine:' . 'sentencesFollow:other: "\)"' . ','
+       \ . 'modifyLineBreaks:oneSentencePerLine:' . 'sentencesBeginWith:other: [a-z]'
+```
+
+# Mappings
 
 To change mappings, for example, to use `zy` instead of `gw`, add the lines
 
