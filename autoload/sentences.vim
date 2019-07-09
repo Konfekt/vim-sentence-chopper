@@ -38,7 +38,8 @@ function! s:chop(o,c) abort
   if !s:latexindent
     let tw=&l:textwidth
     let fo=&l:formatoptions
-    setlocal textwidth=999999
+    " size of buffer in bytes
+    let &l:textwidth = line2byte(line('$') + 1)
     setlocal formatoptions&
 
     exe 'normal! ' . o . 'gw' . c
