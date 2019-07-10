@@ -17,7 +17,7 @@ This formatter will also distinguish `TeX` markup from prose to preserve syntact
 For example, hitting `gwip` on
 
 ```
-  Hello! How are you? Fine; after all.
+  Hello! How are you? Fine. And you?
 ```
 
 turns it into
@@ -25,17 +25,17 @@ turns it into
 ```
   Hello!
   How are you?
-  Fine;
-  after all.
+  Fine.
+  And you?
 ```
 
 # Configuration
 
-The variable `g:punctuation_marks` defines punctuation marks at which sentences are split up;
+The variable `g:punctuation_marks` defines punctuation marks at which sentences are split up other than `.`;
 it is by default set to
 
 ```vim
-  let g:punctuation_marks = '.?!'
+  let g:punctuation_marks = '?!'
 ```
 
 The variable `g:latexindent` defines whether [latexindent](https://github.com/cmhughes/latexindent.pl) should be used by default;

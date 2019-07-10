@@ -43,10 +43,10 @@ turns it into
 Configuration ~
 
 The variable g:punctuation_marks defines punctuation marks at which sentences
-are split up; it is by default set to
+are split up other than '.'; it is by default set to
 
 >
-  let g:punctuation_marks = '.?!'
+  let g:punctuation_marks = '?!'
 <
 
 The variable g:latexindent defines whether latexindent should be used by

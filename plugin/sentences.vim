@@ -37,7 +37,7 @@ if g:latexindent
   endif
 else
   if !exists('g:punctuation_marks')
-    let g:punctuation_marks = '.?!'
+    let g:punctuation_marks = '?!'
   endif
 endif
 
