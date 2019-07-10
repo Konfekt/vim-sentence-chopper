@@ -81,7 +81,18 @@ To change mappings, for example, to use `zy` instead of `gw`, add the lines
 
 to your `vimrc`.
 
-# Related
+# Hints
+
+To replace (or delete, or any other operation by Vim) up to the next punctuation mark, say `.` and `,;:!?`, add
+
+```vim
+onoremap <silent> . :<c-u>call search('\v\C%(%([^[:digit:]IVX]\|[)''"])\zs[.]\|[,;:!?])[[:space:])''"]\|[.,;:!?]$','W')<CR>
+```
+
+to your `vimrc`!
+Then, for example, hitting `c.` will change and `d.` delete the text up to the next punctuation mark.
+Say `c.` turns `That's*it, Sir.`, where `*` stands for the cursor position, into `That's*, Sir.`
+This can be thought of as a counterpart to Vim's built-in `C` and `D` commands for prose.
 
 To normalize [Unicode Homoglyphs](https://www.irongeek.com/homoglyph-attack-generator.php), for example, of white spaces and punctuation marks, before chopping sentences, see the Vim plug-in [vim-unicode-homoglyphs](https://github.com/Konfekt/vim-unicode-homoglyphs) that highlights and normalizes Unicode homoglyphs.
 
