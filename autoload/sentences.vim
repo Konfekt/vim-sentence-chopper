@@ -54,7 +54,7 @@ function! s:chop(o,c) abort
           \ '\C\v(%([^[:digit:]IVX]|[)''"])[.]|[' . g:punctuation_marks . '])[[:space:])''"]' 
           \ . '/'
           \ .'\1\r'
-    silent exe o . ',' . c . 'substitute/' . subst . '/geI'
+    exe 'silent ' . o . ',' . c . 'substitute/' . subst . '/geI'
 
     let &gdefault = gdefault
   else
@@ -64,7 +64,7 @@ function! s:chop(o,c) abort
             \ . ' ' . s:latexindent_options . ' ' . g:latexindent_options
             \ . ' ' . '--yaml=' . '''' . s:latexindent_yaml_options . ',' . g:latexindent_yaml_options . ''''
             \ . ' ' . '2>' . s:nul
-    exe 'normal! ' . o . '=' . c
+    exe 'silent normal! ' . o . '=' . c
 
     let &l:equalprg = equalprg
   endif
