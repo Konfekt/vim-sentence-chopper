@@ -15,10 +15,10 @@ scriptencoding utf-8
 "
 " 0. Faites ce que vous voulez, j’en ai RIEN À BRANLER.
 
-if exists('g:loaded_sentences') || &cp
+if exists('g:loaded_sentence_chopper') || &cp
   finish
 endif
-let g:loaded_sentences = 1
+let g:loaded_sentence_chopper = 1
 
 let s:keepcpo         = &cpo
 set cpo&vim
