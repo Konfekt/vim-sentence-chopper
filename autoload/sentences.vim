@@ -30,7 +30,6 @@ function! sentences#chop(...) abort
   normal! g``
 endfunction
 
-
 function! s:chop(o,c) abort
   let o = a:o
   let c = a:c
@@ -54,7 +53,7 @@ function! s:chop(o,c) abort
           \ '\C\v(%([^[:digit:]IVX]|[)''"])[.]|[' . g:punctuation_marks . '])[[:space:])''"]' 
           \ . '/'
           \ .'\1\r'
-    exe 'silent ' . o . ',' . c . 'substitute/' . subst . '/geI'
+    exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
 
     let &gdefault = gdefault
   else
