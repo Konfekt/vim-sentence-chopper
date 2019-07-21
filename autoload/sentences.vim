@@ -66,6 +66,14 @@ function! s:chop(o,c) abort
             \ . ' ' . '2>' . s:nul
     exe 'silent normal! ' . o . '=' . c
 
+    " error handling
+    if v:shell_error > 0
+      silent undo
+      redraw
+      echomsg 'Formatprg "' . &l:equalprg . '" exited with status ' . v:shell_error . '.'
+    endif
+    " end of error handling
+
     let &l:equalprg = equalprg
   endif
 
