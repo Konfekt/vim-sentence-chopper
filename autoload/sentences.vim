@@ -36,15 +36,11 @@ function! s:chop(o,c) abort
 
   if !s:latexindent
     let tw=&l:textwidth
-    let fo=&l:formatoptions
-    " size of buffer in bytes
     let &l:textwidth = line2byte(line('$') + 1)
-    setlocal formatoptions&
 
     exe 'silent keepjumps normal! ' . o . 'gw' . c
 
     let &l:textwidth=tw
-    let &l:formatoptions=fo
 
     let gdefault = &gdefault
     set gdefault&
@@ -57,24 +53,27 @@ function! s:chop(o,c) abort
 
     let &gdefault = gdefault
   else
-    let equalprg = &equalprg
+    let formatprg = &l:formatprg
 
-    let &l:equalprg = 'latexindent'
+    let &l:formatprg = 'latexindent'
             \ . ' ' . s:latexindent_options . ' ' . g:latexindent_options
             \ . ' ' . '--yaml=' . '''' . s:latexindent_yaml_options . ',' . g:latexindent_yaml_options . ''''
             \ . ' ' . '2>' . s:nul
-    exe 'silent normal! ' . o . '=' . c
+    exe 'silent normal! ' . o . 'gq' . c
 
     " error handling
     if v:shell_error > 0
       silent undo
       redraw
-      echomsg 'Formatprg "' . &l:equalprg . '" exited with status ' . v:shell_error . '.'
+      echomsg 'Formatprg "' . &l:formatprg . '" exited with status ' . v:shell_error . '.'
     endif
     " end of error handling
 
-    let &l:equalprg = equalprg
+    let &l:formatprg = formatprg
   endif
 
+  let equalprg = &l:equalprg
+  let equalprg = ''
   exe 'silent keepjumps normal! ' . o . '=' . c
+  let &l:equalprg = equalprg
 endfunction
