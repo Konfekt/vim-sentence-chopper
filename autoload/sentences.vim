@@ -41,7 +41,7 @@ function! s:chop(o,c) abort
     let &l:textwidth = line2byte(line('$') + 1)
     setlocal formatoptions&
 
-    exe 'normal! ' . o . 'gw' . c
+    exe 'silent keepjumps normal! ' . o . 'gw' . c
 
     let &l:textwidth=tw
     let &l:formatoptions=fo
@@ -76,5 +76,5 @@ function! s:chop(o,c) abort
     let &l:equalprg = equalprg
   endif
 
-  silent exe 'normal! ' . o . '=' . c
+  exe 'silent keepjumps normal! ' . o . '=' . c
 endfunction
