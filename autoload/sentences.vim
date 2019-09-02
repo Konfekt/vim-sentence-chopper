@@ -35,12 +35,7 @@ function! s:chop(o,c) abort
   let c = a:c
 
   if !s:latexindent
-    let tw=&l:textwidth
-    let &l:textwidth = line2byte(line('$') + 1)
-
-    exe 'silent keepjumps normal! ' . o . 'gw' . c
-
-    let &l:textwidth=tw
+    exe o . ',' . c . 'join'
 
     let gdefault = &gdefault
     set gdefault&
