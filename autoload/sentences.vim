@@ -1,4 +1,4 @@
-scriptencoding uft-8
+scriptencoding utf-8
 
 let s:latexindent = executable('latexindent') && g:latexindent
 
