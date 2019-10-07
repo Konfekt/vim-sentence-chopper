@@ -40,10 +40,13 @@ function! s:chop(o,c) abort
     let gdefault = &gdefault
     set gdefault&
 
+    " - skip dots after ordinal numbers,
+    " - remove blanks after punctuation, but
+    " - recognize phrases inside parentheses, braces, brackets or quotation marks
     let subst =
-          \ '\C\v(%(%([^[:digit:]IVX]|[\])''"])[.]|[' . g:punctuation_marks . '])[[:space:]\])''"])' 
+          \ '\C\v(%(%([^[:digit:]IVX]|[\])''"])[.]|[' . g:punctuation_marks . ']))%(\s+|([\])''"]))' 
           \ . '/'
-          \ .'\1\r'
+          \ .'\1\2\r'
     exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
 
     let &gdefault = gdefault
