@@ -1,6 +1,18 @@
 scriptencoding utf-8
 
-let s:latexindent = executable('latexindent') && g:latexindent
+if !exists('g:latexindent')
+  let g:latexindent = executable('latexindent')
+elseif g:latexindent && !executable('latexindent')
+  echoerr 'sentence-chopper: Please ensure that the path to the folder that contains the latexindent executable is included in the value of the $PATH variable!'
+  let g:latexindent = 0
+endif
+
+if !exists('g:latexindent_yaml_options')
+  let g:latexindent_yaml_options = ''
+endif
+if !exists('g:latexindent_options')
+  let g:latexindent_options = ''
+endif
 
 let s:cruft_folder = fnamemodify(tempname(), ':p:h')
 let s:shell_slash = exists('+shellslash') && !&shellslash ? '\' : '/'
@@ -15,12 +27,11 @@ function! sentences#chop(...) abort
   normal! m`
 
   if a:0 == 2
-    " invoked from Visual mode
-    " character- or block-wise range unsupported because
-    " neither gq nor gw supports it.
+    " visual mode
     let open  = a:1
     let close = a:2
   else
+    " normal mode
     let open  = "'["
     let close = "']"
   endif
@@ -34,7 +45,7 @@ function! s:chop(o,c) abort
   let o = a:o
   let c = a:c
 
-  if !s:latexindent
+  if !g:latexindent
     exe o . ',' . c . 'join'
 
     let gdefault = &gdefault

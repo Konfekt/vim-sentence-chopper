@@ -25,20 +25,9 @@ set cpo&vim
 
 " ------------------------------------------------------------------------------
 
-if !exists('g:latexindent')
-  let g:latexindent = 1
-endif
-if g:latexindent
-  if !exists('g:latexindent_yaml_options')
-    let g:latexindent_yaml_options = ''
-  endif
-  if !exists('g:latexindent_options')
-    let g:latexindent_options = ''
-  endif
-else
-  if !exists('g:punctuation_marks')
-    let g:punctuation_marks = '?!'
-  endif
+
+if !exists('g:punctuation_marks')
+  let g:punctuation_marks = '?!'
 endif
 
 command! -range=% -bar ChopSentences call sentences#chop(<line1>, <line2>)
