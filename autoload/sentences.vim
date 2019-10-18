@@ -18,7 +18,7 @@ let s:cruft_folder = fnamemodify(tempname(), ':p:h')
 let s:shell_slash = exists('+shellslash') && !&shellslash ? '\' : '/'
 
 let s:latexindent_options = '-modifylinebreaks'
-      \ . ' ' . '--cruft=' . s:cruft_folder . s:shell_slash
+      \ . ' ' . '-cruft=' . s:cruft_folder . s:shell_slash
 let s:latexindent_yaml_options = 'modifyLineBreaks:oneSentencePerLine:manipulateSentences: 1'
 
 let s:nul = has('win32') ? 'NUL' : '/dev/null'
@@ -62,12 +62,14 @@ function! s:chop(o,c) abort
 
     let &gdefault = gdefault
   else
+    let formatexpr = &l:formatexpr
     let formatprg = &l:formatprg
 
     let &l:formatprg = 'latexindent'
             \ . ' ' . s:latexindent_options . ' ' . g:latexindent_options
-            \ . ' ' . '--yaml=' . '''' . s:latexindent_yaml_options . ',' . g:latexindent_yaml_options . ''''
+            \ . ' ' . '-yaml=' . '''' . s:latexindent_yaml_options . ',' . g:latexindent_yaml_options . ''''
             \ . ' ' . '2>' . s:nul
+    let &l:formatexpr = ''
     exe 'silent normal! ' . o . 'gq' . c
 
     " error handling
@@ -79,6 +81,7 @@ function! s:chop(o,c) abort
     " end of error handling
 
     let &l:formatprg = formatprg
+    let &l:formatexpr = formatexpr
   endif
 
   let equalprg = &l:equalprg
