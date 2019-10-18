@@ -30,7 +30,7 @@ if !exists('g:punctuation_marks')
   let g:punctuation_marks = '?!'
 endif
 
-command! -range=% -bar ChopSentences call sentences#chop(<line1>, <line2>)
+command! -range=% -bar ChopSentences call sentences#chop('<line1>G', '<line2>G')
 
 nnoremap <silent> <plug>(ChopSentences) :<C-U>set  opfunc=sentences#chop<CR>g@
 xnoremap <silent> <plug>(ChopSentences) :<C-U>call sentences#chop("'<", "'>")<CR>
