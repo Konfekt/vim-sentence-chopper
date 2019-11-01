@@ -7,7 +7,7 @@ This Vim plug-in furnishes
 
 that put each sentence onto a single line.
 
-That is, lines are only broken at punctuation marks `.;:?!` (customizable by the variable `g:punctuation_marks`) for [better version control of prose](https://news.ycombinator.com/item?id=4642395) such as `markdown`, `tex` or `text` files.
+That is, lines are only broken at punctuation marks `.?!` (customizable by the variable `g:punctuation_marks`) for [better version control of prose](https://news.ycombinator.com/item?id=4642395) such as `markdown`, `tex` or `text` files.
 
 For best results, ensure that [latexindent](https://github.com/cmhughes/latexindent.pl) is installed and the folder that contains its executable is listed in `$PATH` (respectively in `%PATH%` on Microsoft Windows).
 This formatter will also distinguish `TeX` markup from prose to preserve syntactic line breaks.

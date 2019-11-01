@@ -14,7 +14,7 @@ This Vim plug-in furnishes
 
 that put each sentence onto a single line.
 
-That is, lines are only broken at punctuation marks .;:?! for better version
+That is, lines are only broken at punctuation marks .?! for better version
 control of prose such as markdown, tex or text files.
 
 For best results, ensure that latexindent is installed and the folder that
