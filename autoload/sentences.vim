@@ -62,26 +62,28 @@ function! s:chop(o,c) abort
 
     let &gdefault = gdefault
   else
-    let formatexpr = &l:formatexpr
-    let formatprg = &l:formatprg
+    try
+      let formatexpr = &l:formatexpr
+      let formatprg = &l:formatprg
 
-    let &l:formatprg = 'latexindent'
-            \ . ' ' . s:latexindent_options . ' ' . g:latexindent_options
-            \ . ' ' . '-yaml=' . '''' . s:latexindent_yaml_options . ',' . g:latexindent_yaml_options . ''''
-            \ . ' ' . '2>' . s:nul
-    let &l:formatexpr = ''
-    exe 'silent normal! ' . o . 'gq' . c
+      let &l:formatprg = 'latexindent'
+              \ . ' ' . s:latexindent_options . ' ' . g:latexindent_options
+              \ . ' ' . '-yaml=' . '''' . s:latexindent_yaml_options . ',' . g:latexindent_yaml_options . ''''
+              \ . ' ' . '2>' . s:nul
+      let &l:formatexpr = ''
+      exe 'silent normal! ' . o . 'gq' . c
 
-    " error handling
-    if v:shell_error > 0
-      silent undo
-      redraw
-      echomsg 'Formatprg "' . &l:formatprg . '" exited with status ' . v:shell_error . '.'
-    endif
-    " end of error handling
-
-    let &l:formatprg = formatprg
-    let &l:formatexpr = formatexpr
+      " error handling
+      if v:shell_error > 0
+        silent undo
+        redraw
+        echomsg 'Formatprg "' . &l:formatprg . '" exited with status ' . v:shell_error . '.'
+      endif
+      " end of error handling
+    finally
+      let &l:formatprg = formatprg
+      let &l:formatexpr = formatexpr
+    endtry
   endif
 
   let equalprg = &l:equalprg
