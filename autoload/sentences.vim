@@ -46,11 +46,11 @@ function! s:chop(o,c) abort
   let c = a:c
 
   if !g:latexindent
-    exe o . ',' . c . 'join'
-
     let gdefault = &gdefault
     set gdefault&
 
+    let subst = '\v([^\n])\n([^\n])/\1 \2'
+    exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
     " - skip dots after ordinal numbers,
     " - remove blanks after punctuation, but
     " - recognize phrases inside parentheses, braces, brackets or quotation marks
