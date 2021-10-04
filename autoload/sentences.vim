@@ -55,7 +55,7 @@ function! s:chop(o,c) abort
     " - remove blanks after punctuation, but
     " - recognize phrases inside parentheses, braces, brackets or quotation marks
     let subst =
-          \ '\C\v(%(%([^[:digit:]IVX]|[\])''"])[.]|[' . g:punctuation_marks . ']))%(\s+|([\])''"]))' 
+            \ '\C\v(%(%([\])''"[:space:]-][[:upper:][:lower:]]{2,}|[[:digit:]]{3,}|[IVX]{5,}|[\])''"])[.]|[' . g:punctuation_marks . ']))%(\s+|([\])''"]))' 
           \ . '/'
           \ .'\1\2\r'
     exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
