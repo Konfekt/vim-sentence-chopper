@@ -1,8 +1,6 @@
 scriptencoding utf-8
 
-if !exists('g:latexindent')
-  let g:latexindent = executable('latexindent')
-elseif g:latexindent && !executable('latexindent')
+if g:latexindent && !executable('latexindent')
   echoerr 'sentence-chopper: Please ensure that the path to the folder that contains the latexindent executable is included in the value of the $PATH variable!'
   let g:latexindent = 0
 endif
@@ -45,7 +43,7 @@ function! s:chop(o,c) abort
   let o = a:o
   let c = a:c
 
-  if !g:latexindent
+  if !get(b:, 'latexindent', g:latexindent)
     let gdefault = &gdefault
     set gdefault&
 

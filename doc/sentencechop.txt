@@ -9,7 +9,7 @@ This Vim plug-in furnishes
   paragraph,
 - a mapping gww (and gwgw) in normal mode that operates on a single line,
 - a mapping gw that operates on the visual selection, and
-- a command ChopSentences that operates on given range (equal to the whole
+- a command *ChopSentences* that operates on given range (equal to the whole
   buffer if unspecified)
 
 that put each sentence onto a single line.
@@ -42,28 +42,26 @@ turns it into
 
 Configuration ~
 
-The variable g:punctuation_marks defines punctuation marks at which sentences
+The variable *g:punctuation_marks* defines punctuation marks at which sentences
 are split up other than '.'; it is by default set to
 
 >
   let g:punctuation_marks = '?!'
 <
 
-The variable g:latexindent defines whether latexindent should be used by
-default; it is by default set to
+The global variable *g:latexindent* and its buffer-local analog *b:latexindent*
+defines whether latexindent [0] should be used; by default, if available,
+latexindent is used in TeX files only. (That is, `b:latexindent` is
+enabled in all buffers of file type TeX.)
 
->
-  let g:latexindent = 1
-<
-
-The variable g:latexindent_options defines the command-line options passed to
+The variable *g:latexindent_options* defines the command-line options passed to
 latexindent as listed by latexindent -h ; it is by default set to
 
 >
   let g:latexindent_options = ''
 <
 
-The variable g:latexindent_yaml_options defines the documented YAML options
+The variable *g:latexindent_yaml_options* defines the documented YAML options
 passed to latexindent; it is by default set to
 
 >
@@ -87,8 +85,8 @@ Mappings ~
 To change mappings, for example, to use zy instead of gw, add the lines
 
 >
-  nmap zy <plug>(ChopSentences)
-  xmap zy <plug>(ChopSentences)
+  nmap zy *<plug>(ChopSentences)*
+  xmap zy *<plug>(ChopSentences)*
 <
 
 to your vimrc.
@@ -111,5 +109,7 @@ for prose.
 To normalize Unicode Homoglyphs, for example, of white spaces and punctuation
 marks, before chopping sentences, see the Vim plug-in vim-unicode-homoglyphs
 that highlights and normalizes Unicode homoglyphs.
+
+[1] https://github.com/cmhughes/latexindent.pl
 
 >:tw=78:ts=2:sts=2:sw=2:ft=help:norl

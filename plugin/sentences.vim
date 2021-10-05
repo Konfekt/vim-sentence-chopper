@@ -30,6 +30,16 @@ if !exists('g:punctuation_marks')
   let g:punctuation_marks = '?!'
 endif
 
+if !exists('g:latexindent')
+  let g:latexindent = 0
+  if executable('latexindent')
+    augroup SentenceChopper
+          autocmd!
+          autocmd FileType tex let b:latexindent = 1
+    augroup end
+  endif
+endif
+
 command! -range=% -bar ChopSentences call sentences#chop('<line1>G', '<line2>G')
 
 nnoremap <silent> <plug>(ChopSentences) :<C-U>set  opfunc=sentences#chop<CR>g@

@@ -38,14 +38,11 @@ it is by default set to
   let g:punctuation_marks = '?!'
 ```
 
-The variable `g:latexindent` defines whether [latexindent](https://github.com/cmhughes/latexindent.pl) should be used by default;
-it is by default set to
+The global variable `g:latexindent` and its buffer-local analog `b:latexindent` defines whether [latexindent](https://github.com/cmhughes/latexindent.pl) should be used;
+by default, if available, latexindent is used in TeX files only.
+(That is, `b:latexindent` is enabled in all buffers of file type TeX.)
 
-```vim
-  let g:latexindent = 1
-```
-
-The variable `g:latexindent_options` defines the command-line options passed to `latexindent` as listed by `latexindent -h`;
+The global variable `g:latexindent_options` defines the command-line options passed to `latexindent` as listed by `latexindent -h`;
 it is by default set to
 
 ```vim
