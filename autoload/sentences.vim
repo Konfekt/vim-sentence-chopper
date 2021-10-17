@@ -7,6 +7,13 @@ endif
 
 if !exists('g:latexindent_yaml_options')
   let g:latexindent_yaml_options = ''
+       \ . 'modifyLineBreaks:items:ItemStartsOnOwnLine: 1' . ','
+       \ . 'modifyLineBreaks:environments:'
+              \ . 'BeginStartsOnOwnLine: 1' . ';'
+              \ . 'BodyStartsOnOwnLine: 1' . ';'
+              \ . 'EndStartsOnOwnLine: 1' . ';'
+              \ . 'EndFinishesWithLineBreak: 1' . ';'
+              \ . 'DBSFinishesWithLineBreak: 1'
 endif
 if !exists('g:latexindent_options')
   let g:latexindent_options = ''
