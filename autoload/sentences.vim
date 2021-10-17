@@ -78,6 +78,7 @@ function! s:chop(o,c) abort
       endif
       " end of error handling
     finally
+      call delete(s:cruft_folder, 'rf')
       let &l:formatprg = formatprg
       let &l:formatexpr = formatexpr
     endtry
