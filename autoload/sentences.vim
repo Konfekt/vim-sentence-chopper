@@ -94,9 +94,6 @@ function! s:chop(o,c) abort
       endif
       " end of error handling
     finally
-      if isdirectory(s:cruft_folder)
-        silent call delete(s:cruft_folder, 'rf')
-      endif
       let &l:formatprg = formatprg
       let &l:formatexpr = formatexpr
     endtry
