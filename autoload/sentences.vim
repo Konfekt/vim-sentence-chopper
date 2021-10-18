@@ -21,8 +21,11 @@ if !exists('g:latexindent_options')
   let g:latexindent_options = ''
 endif
 
-let s:cruft_folder = fnamemodify(tempname(), ':p:h')
 let s:shell_slash = exists('+shellslash') && !&shellslash ? '\' : '/'
+let s:cruft_folder = fnamemodify(tempname(), ':p:h') . s:shell_slash . 'latexindent'
+if !isdirectory(s:cruft_folder)
+  call mkdir(s:cruft_folder, 'p')
+endif
 
 let s:latexindent_options = '-modifylinebreaks'
       \ . ' ' . '-cruft=' . s:cruft_folder . s:shell_slash
@@ -87,7 +90,9 @@ function! s:chop(o,c) abort
       endif
       " end of error handling
     finally
-      call delete(s:cruft_folder, 'rf')
+      if isdirectory(s:cruft_folder)
+        silent call delete(s:cruft_folder, 'rf')
+      endif
       let &l:formatprg = formatprg
       let &l:formatexpr = formatexpr
     endtry
