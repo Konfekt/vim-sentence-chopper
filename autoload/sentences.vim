@@ -13,7 +13,9 @@ if !exists('g:latexindent_yaml_options')
               \ . 'BodyStartsOnOwnLine: 1' . ';'
               \ . 'EndStartsOnOwnLine: 1' . ';'
               \ . 'EndFinishesWithLineBreak: 1' . ';'
-              \ . 'DBSFinishesWithLineBreak: 1'
+              \ . 'DBSFinishesWithLineBreak: 1' . ','
+       \ . 'specialBeginEnd:displayMath:lookForThis: verbatim' . ','
+       \ . 'specialBeginEnd:displayMathTeX:lookForThis: verbatim'
 endif
 if !exists('g:latexindent_options')
   let g:latexindent_options = ''
@@ -71,8 +73,8 @@ function! s:chop(o,c) abort
       let formatprg = &l:formatprg
 
       let &l:formatprg = 'latexindent'
-              \ . ' ' . s:latexindent_options . ' ' . g:latexindent_options
-              \ . ' ' . '-yaml=' . '''' . s:latexindent_yaml_options . ',' . g:latexindent_yaml_options . ''''
+              \ . ' ' . s:latexindent_options . ' ' . get(b:, 'latexindent_options', g:latexindent_options)
+              \ . ' ' . '-yaml=' . '''' . s:latexindent_yaml_options . ',' . get(b:, 'latexindent_yaml_options', g:latexindent_yaml_options) . ''''
               \ . ' ' . '2>' . s:nul
       let &l:formatexpr = ''
       exe 'silent normal! ' . o . 'gq' . c

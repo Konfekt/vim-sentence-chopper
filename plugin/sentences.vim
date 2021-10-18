@@ -35,7 +35,7 @@ if !exists('g:latexindent')
   if executable('latexindent')
     augroup SentenceChopper
           autocmd!
-          autocmd FileType tex let b:latexindent = 1
+          autocmd FileType tex,pandoc let b:latexindent = 1
     augroup end
   endif
 endif
