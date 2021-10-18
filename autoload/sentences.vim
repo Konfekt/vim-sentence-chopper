@@ -14,8 +14,16 @@ if !exists('g:latexindent_yaml_options')
               \ . 'EndStartsOnOwnLine: 1' . ';'
               \ . 'EndFinishesWithLineBreak: 1' . ';'
               \ . 'DBSFinishesWithLineBreak: 1' . ','
-       \ . 'specialBeginEnd:displayMath:lookForThis: verbatim' . ','
-       \ . 'specialBeginEnd:displayMathTeX:lookForThis: verbatim'
+       \ . 'modifyLineBreaks:specialBeginEnd:displayMath:'
+             \ . 'SpecialBeginStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialBodyStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialEndStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialEndFinishesWithLineBreak: 1' . ','
+       \ . 'modifyLineBreaks:specialBeginEnd:displayMathTeX:'
+             \ . 'SpecialBeginStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialBodyStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialEndStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialEndFinishesWithLineBreak: 1' . ','
 endif
 if !exists('g:latexindent_options')
   let g:latexindent_options = ''
@@ -27,8 +35,8 @@ if !isdirectory(s:cruft_folder)
   call mkdir(s:cruft_folder, 'p')
 endif
 
-let s:latexindent_options = '-modifylinebreaks'
-      \ . ' ' . '-cruft=' . s:cruft_folder . s:shell_slash
+let s:latexindent_options = '--modifylinebreaks'
+      \ . ' ' . '--cruft=' . s:cruft_folder . s:shell_slash
 let s:latexindent_yaml_options = 'modifyLineBreaks:oneSentencePerLine:manipulateSentences: 1'
 
 let s:nul = has('win32') ? 'NUL' : '/dev/null'
@@ -77,7 +85,7 @@ function! s:chop(o,c) abort
 
       let &l:formatprg = 'latexindent'
               \ . ' ' . s:latexindent_options . ' ' . get(b:, 'latexindent_options', g:latexindent_options)
-              \ . ' ' . '-yaml=' . '''' . s:latexindent_yaml_options . ',' . get(b:, 'latexindent_yaml_options', g:latexindent_yaml_options) . ''''
+              \ . ' ' . '--yaml=' . '''' . s:latexindent_yaml_options . ',' . get(b:, 'latexindent_yaml_options', g:latexindent_yaml_options) . ''''
               \ . ' ' . '2>' . s:nul
       let &l:formatexpr = ''
       exe 'silent normal! ' . o . 'gq' . c
