@@ -94,6 +94,7 @@ function! s:chop(o,c) abort
       endif
       " end of error handling
     finally
+      if has('win32') | redraw | endif
       let &l:formatprg = formatprg
       let &l:formatexpr = formatexpr
     endtry
