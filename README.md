@@ -61,8 +61,16 @@ the buffer-local variable is undefined it is by default set to
               \ . 'EndStartsOnOwnLine: 1' . ';'
               \ . 'EndFinishesWithLineBreak: 1' . ';'
               \ . 'DBSFinishesWithLineBreak: 1' . ','
-       \ . 'specialBeginEnd:displayMath:lookForThis: verbatim' . ','
-       \ . 'specialBeginEnd:displayMathTeX:lookForThis: verbatim'
+       \ . 'modifyLineBreaks:specialBeginEnd:displayMath:'
+             \ . 'SpecialBeginStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialBodyStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialEndStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialEndFinishesWithLineBreak: 1' . ','
+       \ . 'modifyLineBreaks:specialBeginEnd:displayMathTeX:'
+             \ . 'SpecialBeginStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialBodyStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialEndStartsOnOwnLine: 1' . ';'
+             \ . 'SpecialEndFinishesWithLineBreak: 1' . ','
 ```
 
 For example, to split up sentences also after `;` or `:`  (in addition to `.`), and put every sentence in parentheses onto its proper line, add to your `vimrc`
