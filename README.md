@@ -50,7 +50,7 @@ the buffer-local variable is undefined and the global variable is by default set
 ```
 
 The variable `g:latexindent_yaml_options` (and its buffer-local analog `b:latexindent_yaml_options`) defines the  [documented](http://ctan.uib.no/support/latexindent/documentation/latexindent.pdf) [YAML](https://en.wikipedia.org/wiki/YAML) options passed to `latexindent`;
-the buffer-local variable is undefined it is by default set to
+the buffer-local variable is undefined and the global variable is by default set to
 
 ```vim
   let g:latexindent_yaml_options = ''
