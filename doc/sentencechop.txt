@@ -115,7 +115,7 @@ Hints ~
 To replace (or delete, or any other operation by Vim) up to the next punctuation mark, say . and ,;:!?, add
 
 >
-  onoremap <silent> . :<c-u>call search('\v\C%(%([^[:digit:]IVX]\|[)''"])\zs[.]\|[,;:!?])[[:space:])''"]\|[.,;:!?]$','W')<CR>
+  onoremap <silent> . :<c-u>call search('\v\C%(%([\])''"[:space:]-][[:upper:][:lower:]]{2,}\|[[:digit:]]{3,}\|[ivx]{5,}\|[IVX]{5,}\|[\])''"])\zs[.]\|[,;:!?])%(\s+\|[\])''"])\S\|[.,;:!?]\s*$','W')<CR>
 <
 
 to your vimrc! Then, for example, hitting "c." will change and "d." delete the

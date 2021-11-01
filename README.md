@@ -98,7 +98,7 @@ to your `vimrc`.
 To replace (or delete, or any other operation by Vim) up to the next punctuation mark, say `.` and `,;:!?`, add
 
 ```vim
-onoremap <silent> . :<c-u>call search('\v\C%(%([^[:digit:]IVX]\|[)''"])\zs[.]\|[,;:!?])[[:space:])''"]\|[.,;:!?]$','W')<CR>
+onoremap <silent> . :<c-u>call search('\v\C%(%([\])''"[:space:]-][[:upper:][:lower:]]{2,}\|[[:digit:]]{3,}\|[ivx]{5,}\|[IVX]{5,}\|[\])''"])\zs[.]\|[,;:!?])%(\s+\|[\])''"])\S\|[.,;:!?]\s*$','W')<CR>
 ```
 
 to your `vimrc`!
