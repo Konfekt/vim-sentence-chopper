@@ -5,11 +5,11 @@ This Vim plug-in furnishes
 - a mapping `gw` that operates on the visual selection, and
 - a command `ChopSentences` that operates on given range (equal to the whole buffer if unspecified)
 
-that put each sentence onto a single line.
+that put [each sentence onto a single line](https://sembr.org/).
 
-That is, lines are only broken at punctuation marks `.?!` (customizable by the variable `g:punctuation_marks`) for [better version control of prose](https://news.ycombinator.com/item?id=4642395) such as `markdown`, `tex` or `text` files.
+That is, lines are only broken at punctuation marks `.?!` (customizable by the variable `g:punctuation_marks`) for [better version control of prose](https://news.ycombinator.com/item?id=4642395) in `markdown`, `tex` or other text files.
 
-For best results, ensure that [latexindent](https://github.com/cmhughes/latexindent.pl) is installed and the folder that contains its executable is listed in `$PATH` (respectively in `%PATH%` on Microsoft Windows).
+For best results in `TeX`, ensure that [latexindent](https://github.com/cmhughes/latexindent.pl) is installed and the folder that contains its executable is listed in `$PATH` (respectively in `%PATH%` on Microsoft Windows).
 This formatter will also distinguish `TeX` markup from prose to preserve syntactic line breaks.
 
 # Usage
