@@ -17,7 +17,7 @@ This formatter will also distinguish `TeX` markup from prose to preserve syntact
 For example, hitting `gwip` on
 
 ```
-  Hello! How are you? Fine. And you?
+  Hello! How are you? I'm Fine. And you?
 ```
 
 turns it into
@@ -25,7 +25,7 @@ turns it into
 ```
   Hello!
   How are you?
-  Fine.
+  I'm Fine.
   And you?
 ```
 

@@ -28,7 +28,7 @@ Usage ~
 For example, hitting gwip on
 
 >
-  Hello! How are you? Fine; after all.
+  Hello! How are you? I'm Fine. And you?
 <
 
 turns it into
@@ -36,8 +36,8 @@ turns it into
 >
   Hello!
   How are you?
-  Fine;
-  after all.
+  I'm Fine.
+  And you?
 <
 
 Configuration ~
