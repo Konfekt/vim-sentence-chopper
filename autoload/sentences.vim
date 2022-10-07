@@ -67,10 +67,12 @@ function! s:chop(o,c) abort
     exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
     " - skip dots after ordinal numbers,
     " - remove blanks after punctuation, but
-    " - recognize phrases inside parentheses, braces, brackets or quotation marks
-    let subst =
-            \   '\C\v(%(%([\])''"[:space:]-]%([[:upper:]][[:upper:][:lower:]]{2,}|[[:lower:]]{2,})|[[:digit:]]{3,}|[ivx]{5,}|[IVX]{5,}|[\])''"])[.]|[' . g:punctuation_marks . ']))%(\s+|([\])''"]))\ze\S'
-            \ . '/' . '\1\2\r'
+    " - recognize phrases inside parentheses, brackets or quotation marks
+    " - https://en.wikipedia.org/wiki/Quotation_mark#Unicode_code_point_table
+    " - https://en.wikipedia.org/wiki/Apostrophe#ASCII_encoding
+    let subst = '\C\v'
+          \ . '(%([\[(''"„“«»‚‘‹›[:space:]]|^)%(%(%(%([[:upper:]]{2,}|[[:upper:]][[:lower:]]{2,}%([\/''`’-][[:upper:]]?[[:lower:]]+)*|[[:lower:]]+%([\/''`’-][[:lower:]]+)*|[[:digit:]]+)[\])''"“”«»‘’‹›[:space:]]?['.g:punctuation_marks.']|%([[:upper:]]{2,}|[[:upper:]][[:lower:]]{2,}%([\/''`’-][[:upper:]]?[[:lower:]]+)*|[[:lower:]]+%([\/''`’-][[:lower:]]+)+|[[:lower:]]{2,}|[[:digit:]]{3,})[\])''"“”«»‘’‹›[:space:]]?[.]))))%(\s+)\ze\S'
+          \ . '/' . '\1\r'
     exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
 
     let &gdefault = gdefault
