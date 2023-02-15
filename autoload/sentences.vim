@@ -63,6 +63,10 @@ function! s:chop(o,c) abort
     let gdefault = &gdefault
     set gdefault&
 
+    " convert line positioning commands to line ranges
+    let o = substitute(o, '\(\d\+\)G$', '\1', '')
+    let c = substitute(c, '\(\d\+\)G$', '\1', '')
+
     let subst = '\v([^\n])\n([^\n])/\1 \2'
     exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
     " - skip dots after ordinal numbers,
