@@ -68,7 +68,7 @@ function! s:chop(o,c) abort
     let c = substitute(c, '\(\d\+\)G$', '\1', '')
 
     let subst = '\v([^\n])\n([^\n])/\1 \2'
-    exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
+    exe 'silent keepjumps keeppatterns ' . o . ',' . c . 'substitute/' . subst . '/geI'
     " - skip dots after ordinal numbers,
     " - remove blanks after punctuation, but
     " - recognize phrases inside parentheses, brackets or quotation marks
@@ -77,7 +77,7 @@ function! s:chop(o,c) abort
     let subst = '\C\v'
           \ . '(%([\[(''"„“«»‚‘‹›[:space:]]|^)%(%(%(%([[:upper:]]{2,}|[[:upper:]][[:lower:]]{2,}%([\/''`’-][[:upper:]]?[[:lower:]]+)*|[[:lower:]]+%([\/''`’-][[:lower:]]+)*|[[:digit:]]+)[\])''"“”«»‘’‹›[:space:]]?['.g:punctuation_marks.']|%([[:upper:]]{2,}|[[:upper:]][[:lower:]]{2,}%([\/''`’-][[:upper:]]?[[:lower:]]+)*|[[:lower:]]+%([\/''`’-][[:lower:]]+)+|[[:lower:]]{2,}|[[:digit:]]{3,})[\])''"“”«»‘’‹›[:space:]]?[.]))))%(\s+)\ze\S'
           \ . '/' . '\1\r'
-    exe 'silent keeppatterns' . o . ',' . c . 'substitute/' . subst . '/geI'
+    exe 'silent keepjumps keeppatterns ' . o . ',' . c . 'substitute/' . subst . '/geI'
 
     let &gdefault = gdefault
   else
@@ -90,7 +90,7 @@ function! s:chop(o,c) abort
               \ . ' ' . '--yaml=' . '"' . s:latexindent_yaml_options . ',' . get(b:, 'latexindent_yaml_options', g:latexindent_yaml_options) . '"'
               \ . ' ' . '2>' . s:nul
       let &l:formatexpr = ''
-      exe 'silent normal! ' . o . 'gq' . c
+      exe 'silent keepjumps normal! ' . o . 'gq' . c
 
       " error handling
       if v:shell_error > 0
