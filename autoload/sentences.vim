@@ -67,7 +67,7 @@ function! s:chop(o,c) abort
     let o = substitute(o, '\(\d\+\)G$', '\1', '')
     let c = substitute(c, '\(\d\+\)G$', '\1', '')
 
-    let subst = '\v([^\n])\n([^\n])/\1 \2'
+    let subst = '\v([^\s?\n])\s?\n([^\n])/\1 \2'
     exe 'silent keepjumps keeppatterns ' . o . ',' . c . 'substitute/' . subst . '/geI'
     " - skip dots after ordinal numbers,
     " - remove blanks after punctuation, but
