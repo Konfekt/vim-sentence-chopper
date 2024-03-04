@@ -55,6 +55,34 @@ function! sentences#chop(...) abort
   normal! g``
 endfunction
 
+"   Remove blanks after punctuation, but
+"   recognize phrases inside parentheses, brackets or quotation marks
+" - https://en.wikipedia.org/wiki/Quotation_mark#Unicode_code_point_table
+" - https://en.wikipedia.org/wiki/Apostrophe#ASCII_encoding
+
+let s:open_quote  = '[\[(''"„“«»‚‘‹›]'
+let s:close_quote = '[\])''"“”«»‘’‹›]'
+
+let s:hyphenated_suffix = '%([-/''`’][[:upper:]]?[[:lower:]]+)*'.'[''`’]?'
+let s:upper_word        = '[[:upper:]]{2,}'.s:hyphenated_suffix
+let s:capitalized_word  = '[[:upper:]][[:lower:]]{2,}'.s:hyphenated_suffix
+let s:lower_word        = '[[:lower:]]+'.s:hyphenated_suffix
+
+let s:simple_word = '%('.s:upper_word.'|'.s:capitalized_word.'|'.s:lower_word.'|'.'[[:digit:]]+'.')'
+let s:dot_word  = '%('.s:upper_word.'|'.s:capitalized_word.'|'.s:lower_word.'|'.'[[:digit:]]{3,}'.')'
+
+let s:punctuation = '['.g:punctuation_marks.']'
+
+" Use striter regex for . than for other punctuation markers such as ,;:? to
+" avoid detecting ordinal numbers as end of sentence
+let s:regex = '%('.s:open_quote.'|^)?'. '%(' .
+      \ s:simple_word.'%('.s:close_quote.'?'.s:punctuation.'|'.s:punctuation.s:close_quote.'{,3}'.')' . '|' .
+      \ s:simple_word.s:close_quote.'?'.' '.s:dot_word.'%('.s:close_quote.'{,3}'.'[.]|[.]'.s:close_quote.'?'.')' . ')' .
+      \ '\zs\s+\ze\S'
+
+unlet s:open_quote s:close_quote s:hyphenated_suffix s:upper_word
+            \ s:capitalized_word s:lower_word s:simple_word s:dot_word
+
 function! s:chop(o,c) abort
   let o = a:o
   let c = a:c
@@ -69,14 +97,7 @@ function! s:chop(o,c) abort
 
     let subst = '\v([^\n])\n([^\n])/\1 \2'
     exe 'silent keepjumps keeppatterns ' . o . ',' . c . 'substitute/' . subst . '/geI'
-    " - skip dots after ordinal numbers,
-    " - remove blanks after punctuation, but
-    " - recognize phrases inside parentheses, brackets or quotation marks
-    " - https://en.wikipedia.org/wiki/Quotation_mark#Unicode_code_point_table
-    " - https://en.wikipedia.org/wiki/Apostrophe#ASCII_encoding
-    let subst = '\C\v'
-          \ . '(%([\[(''"„“«»‚‘‹›[:space:]]|^)%(%(%(%([[:upper:]]{2,}|[[:upper:]][[:lower:]]{2,}%([\/''`’-][[:upper:]]?[[:lower:]]+)*|[[:lower:]]+%([\/''`’-][[:lower:]]+)*|[[:digit:]]+)[\])''"“”«»‘’‹›[:space:]]?['.g:punctuation_marks.']|%([[:upper:]]{2,}|[[:upper:]][[:lower:]]{2,}%([\/''`’-][[:upper:]]?[[:lower:]]+)*|[[:lower:]]+%([\/''`’-][[:lower:]]+)+|[[:lower:]]{2,}|[[:digit:]]{3,})[\])''"“”«»‘’‹›[:space:]]?[.]))))%(\s+)\ze\S'
-          \ . '/' . '\1\r'
+    let subst = '\C\v' . s:regex . '/\r'
     exe 'silent keepjumps keeppatterns ' . o . ',' . c . 'substitute/' . subst . '/geI'
 
     let &gdefault = gdefault
