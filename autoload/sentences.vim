@@ -60,8 +60,10 @@ endfunction
 " - https://en.wikipedia.org/wiki/Quotation_mark#Unicode_code_point_table
 " - https://en.wikipedia.org/wiki/Apostrophe#ASCII_encoding
 
-let s:open_quote  = '[\[(''"„“«»‚‘‹›]'
-let s:close_quote = '[\])''"“”«»‘’‹›]'
+let s:opening_delimiters = get(b:, 'opening_delimiters', g:opening_delimiters)
+let s:open_quote  = '[' . escape(s:opening_delimiters, '[]-\') . ']' . '{,3}'
+let s:closing_delimiters = get(b:, 'closing_delimiters', g:closing_delimiters)
+let s:close_quote = '[' . escape(s:closing_delimiters, '[]-\') . ']' . '{,3}'
 
 let s:hyphenated_suffix = '%([-/''`’][[:upper:]]?[[:lower:]]+)*'.'[''`’]?'
 let s:upper_word        = '[[:upper:]]{2,}'.s:hyphenated_suffix
@@ -76,8 +78,8 @@ let s:punctuation = '['.g:punctuation_marks.']'
 " Use stricter regex for . than for other punctuation markers such as ,;:? to
 " avoid detecting ordinal numbers as end of sentence
 let s:regex = '%('.s:open_quote.'|^)?'. '%(' .
-      \ s:simple_word.'%('.s:close_quote.'?'.s:punctuation.'|'.s:punctuation.s:close_quote.'{,3}'.')' . '|' .
-      \ s:simple_word.s:close_quote.'?'.' '.s:dot_word.'%('.s:close_quote.'{,3}'.'[.]|[.]'.s:close_quote.'?'.')' . ')' .
+      \ s:simple_word.'%('.s:close_quote.s:punctuation.'|'.s:punctuation.s:close_quote.')' . '|' .
+      \ s:simple_word.s:close_quote.' '.s:open_quote.s:dot_word.'%('.s:close_quote.'[.]|[.]'.s:close_quote.')' . ')' .
       \ '\zs\s+\ze\S'
 
 unlet s:open_quote s:close_quote s:hyphenated_suffix s:upper_word

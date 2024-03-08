@@ -30,13 +30,24 @@ if !exists('g:punctuation_marks')
   let g:punctuation_marks = '?!'
 endif
 
+if !exists('g:opening_delimiters')
+  let g:opening_delimiters = '\[(''"„“«»‚‘‹›'
+endif
+if !exists('g:closing_delimiters')
+  let g:closing_delimiters = '])''"“”«»‘’‹›'
+endif
+
+augroup SentenceChopper
+  autocmd!
+  autocmd FileType markdown,pandoc 
+        \ let b:opening_delimiters = get(b:, 'opening_delimiters', g:opening_delimiters . '_*')|
+        \ let b:closing_delimiters = get(b:, 'closing_delimiters', g:closing_delimiters . '_*')
+augroup end
+
 if !exists('g:latexindent')
   let g:latexindent = 0
   if executable('latexindent')
-    augroup SentenceChopper
-          autocmd!
-          autocmd FileType tex,pandoc let b:latexindent = get(b:, 'latexindent', 1)
-    augroup end
+    autocmd SentenceChopper FileType tex,pandoc let b:latexindent = get(b:, 'latexindent', 1)
   endif
 endif
 

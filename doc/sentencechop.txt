@@ -49,6 +49,23 @@ are split up other than '.'; it is by default set to
   let g:punctuation_marks = '?!'
 <
 
+The variables *g:opening_delimiters* and *g:closing_delimiters* and its
+buffer-local analogs define delimiters such as parentheses and quotes;
+its global variant default to
+
+>
+  let g:opening_delimiters = '[(''"„“«»‚‘‹›'
+  let g:closing_delimiters = '])''"“”«»‘’‹›'
+<
+
+Its buffer-local variant defaults in Markdown files to
+
+>
+
+  let b:opening_delimiters = g:opening_delimiters . '*_'
+  let b:closing_delimiters = g:closing_delimiters . '*_'
+<
+
 The global variable *g:latexindent* and its buffer-local analog *b:latexindent*
 defines whether latexindent [0] should be used; by default, if available,
 latexindent is used in TeX (and pandoc) files only. (That is, `b:latexindent`

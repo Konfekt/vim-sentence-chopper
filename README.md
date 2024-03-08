@@ -38,6 +38,22 @@ it is by default set to
   let g:punctuation_marks = '?!'
 ```
 
+The variables `g:opening_delimiters` and `g:closing_delimiters` and its
+buffer-local analogs define delimiters such as parentheses and quotes;
+its global variant default to
+
+```vim
+  let g:opening_delimiters = '[(''"„“«»‚‘‹›'
+  let g:closing_delimiters = '])''"“”«»‘’‹›'
+```
+
+Its buffer-local variant defaults in Markdown files to
+
+```vim
+  let g:opening_delimiters = g:opening_delimiters . '*_'
+  let b:closing_delimiters = g:closing_delimiters . '*_'
+```
+
 The global variable `g:latexindent` and its buffer-local analog `b:latexindent` defines whether [latexindent](https://github.com/cmhughes/latexindent.pl) should be used;
 by default, if available, `latexindent` is used in TeX (and [pandoc](https://github.com/vim-pandoc/vim-pandoc) files) only.
 (That is, `b:latexindent` is enabled in all buffers of these file types.)
