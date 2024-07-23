@@ -38,6 +38,18 @@ it is by default set to
   let g:punctuation_marks = '?!'
 ```
 
+If you want to include `,` as a punctuation mark, then you might want to add such a snippet to your `vimrc`, to ensure [proper indentation](https://github.com/Konfekt/vim-sentence-chopper/issues/9#issuecomment-2245168913):
+
+```vim
+augroup vimrcSpell
+  autocmd!
+    autocmd BufNew,BufRead * 
+          \ if &l:modifiable && !&l:readonly && &l:spell | setlocal cinoptions+=+0 | endif
+    autocmd OptionSet spell
+          \ if v:option_new | setlocal cinoptions+=+0 | else| setlocal cinoptions-=+0 | endif
+augroup END
+```
+
 The variables `g:opening_delimiters` and `g:closing_delimiters` and its
 buffer-local analogs define delimiters such as parentheses and quotes;
 its global variant default to
