@@ -130,7 +130,7 @@ function! s:chop(o,c) abort
   endif
 
   let equalprg = &l:equalprg
-  let equalprg = ''
+  let &l:equalprg = ''
   exe 'silent keepjumps normal! ' . o . '=' . c
   let &l:equalprg = equalprg
 endfunction
