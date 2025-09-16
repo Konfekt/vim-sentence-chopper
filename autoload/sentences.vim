@@ -66,12 +66,24 @@ let s:closing_delimiters = get(b:, 'closing_delimiters', g:closing_delimiters)
 let s:close_quote = '[' . escape(s:closing_delimiters, '[]-\') . ']' . '{,3}'
 
 let s:hyphenated_suffix = '%([-/''`’][[:upper:]]?[[:lower:]]+)*'.'[''`’]?'
+let s:alnum_suffix      = '%([-/''`’][[:alnum:]]+)*'.'[''`’]?'
 let s:upper_word        = '[[:upper:]]{2,}'.s:hyphenated_suffix
 let s:capitalized_word  = '[[:upper:]][[:lower:]]{2,}'.s:hyphenated_suffix
 let s:lower_word        = '[[:lower:]]+'.s:hyphenated_suffix
+let s:alphanum_word     = '[[:alnum:]]*[[:alpha:]][[:alnum:]]*' . s:alnum_suffix
 
-let s:simple_word = '%('.s:upper_word.'|'.s:capitalized_word.'|'.s:lower_word.'|'.'[[:digit:]]+'.')'
-let s:dot_word  = '%('.s:upper_word.'|'.s:capitalized_word.'|'.s:lower_word.'|'.'[[:digit:]]{3,}'.')'
+let s:simple_word = '%('
+      \ . s:upper_word . '|'
+      \ . s:capitalized_word . '|'
+      \ . s:lower_word . '|'
+      \ . s:alphanum_word . '|'
+      \ . '[[:digit:]]+' . ')'
+let s:dot_word  = '%('
+      \ . s:upper_word . '|'
+      \ . s:capitalized_word . '|'
+      \ . s:lower_word . '|'
+      \ . s:alphanum_word . '|'
+      \ . '[[:digit:]]{3,}' . ')'
 
 let s:punctuation = '['.g:punctuation_marks.']'
 
@@ -82,8 +94,8 @@ let s:regex = '%('.s:open_quote.'|^)?'. '%(' .
       \ s:simple_word.s:close_quote.' '.s:open_quote.s:dot_word.'%('.s:close_quote.'[.]|[.]'.s:close_quote.')' . ')' .
       \ '\zs\s+\ze\S'
 
-unlet s:open_quote s:close_quote s:hyphenated_suffix s:upper_word
-            \ s:capitalized_word s:lower_word s:simple_word s:dot_word
+unlet s:open_quote s:close_quote s:opening_delimiters s:closing_delimiters
+      \ s:hyphenated_suffix s:alnum_suffix s:upper_word s:capitalized_word s:lower_word s:simple_word s:dot_word
 
 function! s:chop(o,c) abort
   let o = a:o
