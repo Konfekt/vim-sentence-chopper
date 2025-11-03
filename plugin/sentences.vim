@@ -57,16 +57,16 @@ nnoremap <silent> <plug>(ChopSentences) :<C-U>set  opfunc=sentences#chop<CR>g@
 xnoremap <silent> <plug>(ChopSentences) :<C-U>call sentences#chop("'<", "'>")<CR>
 
 if !hasmapto('<Plug>(ChopSentences)', 'n')
-  silent! nmap <unique> gw <plug>(ChopSentences)
+  silent! nmap <unique> gb <plug>(ChopSentences)
 endif
 if !hasmapto('<Plug>(ChopSentences)', 'x')
-  silent! xmap <unique> gw <plug>(ChopSentences)
+  silent! xmap <unique> gb <plug>(ChopSentences)
 endif
 
-if hasmapto('gw', 'n')
+if hasmapto('gb', 'n')
   onoremap     <SID>(underline) _
-  silent! nmap <unique><expr> gww  'gw' . v:count1 . '<SID>(underline)'
-  silent! nmap <unique>       gwgw gww
+  silent! nmap <unique><expr> gbb  'gb' . v:count1 . '<SID>(underline)'
+  silent! nmap <unique>       gbgb gbb
 endif
 
 " ------------------------------------------------------------------------------

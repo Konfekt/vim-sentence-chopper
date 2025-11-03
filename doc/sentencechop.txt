@@ -5,10 +5,10 @@ Intro ~
 
 This Vim plug-in furnishes
 
-- an operator mapping gw in normal mode, for example gwip operates on a
+- an operator mapping gb in normal mode, for example gbip operates on a
   paragraph,
-- a mapping gww (and gwgw) in normal mode that operates on a single line,
-- a mapping gw that operates on the visual selection, and
+- a mapping gbb (and gbgb) in normal mode that operates on a single line,
+- a mapping gb that operates on the visual selection, and
 - a command *ChopSentences* that operates on given range (equal to the whole
   buffer if unspecified)
 
@@ -25,7 +25,7 @@ syntactic line breaks.
 
 Usage ~
 
-For example, hitting gwip on
+For example, hitting gbip on
 
 >
   Hello! How are you? I'm Fine. And you?
@@ -130,7 +130,7 @@ put every sentence in parentheses onto its proper line, add to your vimrc
 
 Mappings ~
 
-To change mappings, for example, to use zy instead of gw, add the lines
+To change mappings, for example, to use zy instead of gb, add the lines
 
 >
   nmap zy *<plug>(ChopSentences)*

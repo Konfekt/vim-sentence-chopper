@@ -1,8 +1,8 @@
 This Vim plug-in furnishes
 
-- an operator mapping `gw` in normal mode, for example `gwip` operates on a paragraph,
-- a mapping `gww` (and `gwgw`) in normal mode that operates on a single line,
-- a mapping `gw` that operates on the visual selection, and
+- an operator mapping `gb` (with `b` as in `break`) in normal mode, for example `gbip` operates on a paragraph,
+- a mapping `gbb` (and `gbgb`) in normal mode that operates on a single line,
+- a mapping `gb` that operates on the visual selection, and
 - a command `ChopSentences` that operates on given range (equal to the whole buffer if unspecified)
 
 that put [each sentence onto a single line](https://sembr.org/).
@@ -14,7 +14,7 @@ This formatter will also distinguish `TeX` markup from prose to preserve syntact
 
 # Usage
 
-For example, hitting `gwip` on
+For example, hitting `gbip` on
 
 ```
   Hello! How are you? I'm Fine. And you?
@@ -112,7 +112,7 @@ let g:latexindent_yaml_options = 'modifyLineBreaks:oneSentencePerLine:sentencesE
 
 # Mappings
 
-To change mappings, for example, to use `zy` instead of `gw`, add the lines
+To change mappings, for example, to use `zy` instead of `gb`, add the lines
 
 ```vim
     nmap zy <plug>(ChopSentences)
@@ -136,3 +136,6 @@ This can be thought of as a counterpart to Vim's built-in `C` and `D` commands f
 
 To normalize [Unicode Homoglyphs](https://www.irongeek.com/homoglyph-attack-generator.php), for example, of white spaces and punctuation marks, before chopping sentences, see the Vim plug-in [vim-unicode-homoglyphs](https://github.com/Konfekt/vim-unicode-homoglyphs) that highlights and normalizes Unicode homoglyphs.
 
+# Related
+
+The plug-in [vim-formatprgs](https://github.com/konfekt/vim-formatprgs#use-gw-to-format-paragraphs) adds formatting of code (blocks) to `gq` (whereas `gw` remains for built-in formatting).
