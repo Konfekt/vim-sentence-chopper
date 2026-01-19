@@ -63,7 +63,7 @@ if !hasmapto('<Plug>(ChopSentences)', 'x')
   silent! xmap <unique> gb <plug>(ChopSentences)
 endif
 
-if hasmapto('gb', 'n')
+if maparg('gb', 'n') ==# '<Plug>(ChopSentences)'
   onoremap     <SID>(underline) _
   silent! nmap <unique><expr> gbb  'gb' . v:count1 . '<SID>(underline)'
   silent! nmap <unique>       gbgb gbb
