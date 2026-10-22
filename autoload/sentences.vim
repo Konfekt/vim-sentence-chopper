@@ -78,24 +78,57 @@ let s:simple_word = '%('
       \ . s:lower_word . '|'
       \ . s:alphanum_word . '|'
       \ . '[[:digit:]]+' . ')'
-let s:dot_word  = '%('
-      \ . s:upper_word . '|'
-      \ . s:capitalized_word . '|'
-      \ . s:lower_word . '|'
-      \ . s:alphanum_word . '|'
+" One token before '.': at least two letters (so "J." / "e.g." stay), or a
+" letter plus an apostrophe ("O'Brien"), or 3+ digits (so "1." / "3.14" stay).
+let s:dot_word = '%('
+      \ . '%([[:alpha:]][[:alnum:]]|[[:alnum:]][[:alpha:]])[[:alnum:]]*' . s:alnum_suffix . '|'
+      \ . '[[:alpha:]]%([-/''`’][[:alnum:]]+)+[''`’]?' . '|'
       \ . '[[:digit:]]{3,}' . ')'
+" Whole token only: "played." and "Mozart." still end a sentence.
+" One lookbehind per length; Vim rejects mixed widths. "Hauptstr." is a suffix.
+let s:not_abbr = ''
+for s:abbr_group in [
+      \ ['Mr', 'Dr', 'Ms', 'St', 'Jr', 'Sr', 'vs', 'cf',
+      \  'Ud', 'Av', 'av', 'Pe', 'Pr', 'Me', 'MM', 'Hr', 'Fr', 'Nr', 'nr',
+      \  'Bd', 'bd', 'ca', 'Jh', 'Fa', 'Hl', 'Co', 'ff', 'ed', 'SS', 'éd'],
+      \ ['Mrs', 'Fig', 'fig', 'Inc', 'Ltd',
+      \  'Sra', 'Dra', 'Uds', 'Lic', 'Ing', 'Arq', 'art', 'Art', 'cap', 'vol', 'pag', 'pág',
+      \  'Dña', 'núm', 'Sig', 'Avv', 'Rag', 'cfr', 'sez', 'Mme', 'Ste', 'Cie', 'env',
+      \  'Frl', 'Abb', 'Abs', 'bzw', 'vgl', 'ggf', 'Mio', 'Mrd', 'Tel', 'tel',
+      \  'geb', 'Kap', 'Anm', 'Tab', 'Abt', 'Eng', 'Rev', 'obs', 'Exa',
+      \  'med', 'jur', 'nat', 'max', 'min'],
+      \ ['Prof', 'Srta', 'Dott', 'Geom', 'Arch', 'Mlle', 'Mmes', 'chap',
+      \  'evtl', 'inkl', 'exkl', 'zzgl', 'gest', 'Hrsg', 'Aufl', 'bzgl', 'phil',
+      \  'Dipl', 'kath', 'Ltda', 'Exmo', 'Exma', 'Ilmo', 'Ilma', 'págs'],
+      \ ['Profa'],
+      \ ]
+  let s:abbr_parts = []
+  for s:abbr in s:abbr_group
+    call add(s:abbr_parts, '[^[:alpha:]]' . s:abbr)
+    call add(s:abbr_parts, '^' . s:abbr)
+  endfor
+  let s:not_abbr .= '%(' . join(s:abbr_parts, '|') . ')@<!'
+endfor
+let s:not_abbr .= '%(Str|str)@<!'
+unlet s:abbr_group s:abbr_parts s:abbr
 
 let s:punctuation = '['.g:punctuation_marks.']'
 
-" Use stricter regex for . than for other punctuation markers such as ,;:? to
-" avoid detecting ordinal numbers as end of sentence
-let s:regex = '%('.s:open_quote.'|^)?'. '%(' .
-      \ s:simple_word.'%('.s:close_quote.s:punctuation.'|'.s:punctuation.s:close_quote.')' . '|' .
-      \ s:simple_word.s:close_quote.' '.s:open_quote.s:dot_word.'%('.s:close_quote.'[.]|[.]'.s:close_quote.')' . ')' .
-      \ '\zs\s+\ze\S'
+" '?' and '!' split after one word. '.' splits only before a capital, so
+" "Fig. 1" and "vs. the" stay, and not after the abbreviations above.
+let s:regex = '%('
+      \ . '%('.s:open_quote.'|^)?' . s:simple_word
+      \ . '%('.s:close_quote.s:punctuation.'|'.s:punctuation.s:close_quote.')'
+      \ . '\zs\s+\ze\S'
+      \ . '|'
+      \ . '%('.s:open_quote.'|^)?' . s:dot_word . s:not_abbr
+      \ . '%('.s:close_quote.'\.+|'.'\.+'.s:close_quote.')'
+      \ . '\zs\s+\ze' . s:open_quote . '[[:upper:]]'
+      \ . ')'
 
 unlet s:open_quote s:close_quote s:opening_delimiters s:closing_delimiters
-      \ s:hyphenated_suffix s:alnum_suffix s:upper_word s:capitalized_word s:lower_word s:simple_word s:dot_word
+      \ s:hyphenated_suffix s:alnum_suffix s:upper_word s:capitalized_word
+      \ s:lower_word s:simple_word s:dot_word s:not_abbr s:punctuation
 
 function! s:chop(o,c) abort
   let o = a:o
@@ -109,10 +142,23 @@ function! s:chop(o,c) abort
     let o = substitute(o, '\(\d\+\)G$', '\1', '')
     let c = substitute(c, '\(\d\+\)G$', '\1', '')
 
-    let subst = '\v([^\n])\n([^\n])/\1 \2'
-    exe 'silent keepjumps keeppatterns ' . o . ',' . c . 'substitute/' . subst . '/geI'
-    let subst = '\C\v' . s:regex . '/\r'
-    exe 'silent keepjumps keeppatterns ' . o . ',' . c . 'substitute/' . subst . '/geI'
+    " line('1') is not line 1; a numeric ChopSentences bound is already a number.
+    let start = o =~# '^\d\+$' ? str2nr(o) : line(o)
+    let end = c =~# '^\d\+$' ? str2nr(c) : line(c)
+    if start >= 1 && end >= start
+      " A newline match runs past the last line. A blank line stops it.
+      let guard = end < line('$')
+      if guard
+        call append(end, '')
+      endif
+      let height = line('$')
+      exe 'silent keepjumps keeppatterns ' . start . ',' . end . 'substitute/\v(\S)\s*\n\s*(\S)/\1 \2/geI'
+      let end = end - (height - line('$'))
+      if guard
+        exe 'silent keepjumps ' . (end + 1) . 'delete _'
+      endif
+      exe 'silent keepjumps keeppatterns ' . start . ',' . end . 'substitute/\C\v' . s:regex . '/\r/geI'
+    endif
 
     let &gdefault = gdefault
   else
