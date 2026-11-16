@@ -29,7 +29,6 @@ if !exists('g:latexindent_options') | let g:latexindent_options = '' | endif
 
 let s:shell_slash = exists('+shellslash') && !&shellslash ? '\' : '/'
 let s:cruft_folder = fnamemodify(tempname(), ':p:h') . s:shell_slash . 'latexindent'
-if !isdirectory(s:cruft_folder) | call mkdir(s:cruft_folder, 'p') | endif
 
 let s:latexindent_options = '--modifylinebreaks'
       \ . ' ' . '--cruft=' . s:cruft_folder . s:shell_slash
@@ -37,33 +36,10 @@ let s:latexindent_yaml_options = 'modifyLineBreaks:oneSentencePerLine:manipulate
 
 let s:nul = has('win32') ? 'NUL' : '/dev/null'
 
-function! sentences#chop(...) abort
-  normal! m`
-
-  if a:0 == 2
-    " visual mode
-    let open  = a:1
-    let close = a:2
-  else
-    " normal mode
-    let open  = "'["
-    let close = "']"
-  endif
-
-  call s:chop(open, close)
-
-  normal! g``
-endfunction
-
 "   Remove blanks after punctuation, but
 "   recognize phrases inside parentheses, brackets or quotation marks
 " - https://en.wikipedia.org/wiki/Quotation_mark#Unicode_code_point_table
 " - https://en.wikipedia.org/wiki/Apostrophe#ASCII_encoding
-
-let s:opening_delimiters = get(b:, 'opening_delimiters', g:opening_delimiters)
-let s:open_quote  = '[' . escape(s:opening_delimiters, '[]-\') . ']' . '{,3}'
-let s:closing_delimiters = get(b:, 'closing_delimiters', g:closing_delimiters)
-let s:close_quote = '[' . escape(s:closing_delimiters, '[]-\') . ']' . '{,3}'
 
 let s:hyphenated_suffix = '%([-/''`’][[:upper:]]?[[:lower:]]+)*'.'[''`’]?'
 let s:alnum_suffix      = '%([-/''`’][[:alnum:]]+)*'.'[''`’]?'
@@ -111,84 +87,141 @@ for s:abbr_group in [
 endfor
 let s:not_abbr .= '%(Str|str)@<!'
 unlet s:abbr_group s:abbr_parts s:abbr
+unlet s:hyphenated_suffix s:alnum_suffix s:upper_word s:capitalized_word
+      \ s:lower_word s:alphanum_word
 
-let s:punctuation = '['.g:punctuation_marks.']'
+" The delimiters may be buffer-local (Markdown adds '_*') and the punctuation
+" marks may change at any time, so build the pattern per call and cache it.
+let s:regex_cache = {}
 
-" '?' and '!' split after one word. '.' splits only before a capital, so
-" "Fig. 1" and "vs. the" stay, and not after the abbreviations above.
-let s:regex = '%('
-      \ . '%('.s:open_quote.'|^)?' . s:simple_word
-      \ . '%('.s:close_quote.s:punctuation.'|'.s:punctuation.s:close_quote.')'
-      \ . '\zs\s+\ze\S'
-      \ . '|'
-      \ . '%('.s:open_quote.'|^)?' . s:dot_word . s:not_abbr
-      \ . '%('.s:close_quote.'\.+|'.'\.+'.s:close_quote.')'
-      \ . '\zs\s+\ze' . s:open_quote . '[[:upper:]]'
-      \ . ')'
+function! s:regex() abort
+  let open = get(b:, 'opening_delimiters', g:opening_delimiters)
+  let close = get(b:, 'closing_delimiters', g:closing_delimiters)
+  let key = join([open, close, g:punctuation_marks], "\n")
+  if !has_key(s:regex_cache, key)
+    let open_quote  = '[' . escape(open, '[]-\') . ']' . '{,3}'
+    let close_quote = '[' . escape(close, '[]-\') . ']' . '{,3}'
+    let punctuation = '[' . g:punctuation_marks . ']'
+    " '?' and '!' split after one word. '.' splits only before a capital, so
+    " "Fig. 1" and "vs. the" stay, and not after the abbreviations above.
+    let s:regex_cache[key] = '%('
+          \ . '%(' . open_quote . '|^)?' . s:simple_word
+          \ . '%(' . close_quote . punctuation . '|' . punctuation . close_quote . ')'
+          \ . '\zs\s+\ze\S'
+          \ . '|'
+          \ . '%(' . open_quote . '|^)?' . s:dot_word . s:not_abbr
+          \ . '%(' . close_quote . '\.+|' . '\.+' . close_quote . ')'
+          \ . '\zs\s+\ze' . open_quote . '[[:upper:]]'
+          \ . ')'
+  endif
+  return s:regex_cache[key]
+endfunction
 
-unlet s:open_quote s:close_quote s:opening_delimiters s:closing_delimiters
-      \ s:hyphenated_suffix s:alnum_suffix s:upper_word s:capitalized_word
-      \ s:lower_word s:simple_word s:dot_word s:not_abbr s:punctuation
+function! sentences#chop(...) abort
+  let pos = getpos('.')
+  normal! m`
+  if a:0 == 2
+    " visual mode or :ChopSentences
+    call s:chop(a:1, a:2)
+  else
+    " operator
+    call s:chop("'[", "']")
+  endif
+  " The mark follows the cursor line, but is gone if that line was joined.
+  if line('``') > 0
+    normal! g``
+  else
+    call cursor(min([pos[1], line('$')]), pos[2])
+  endif
+endfunction
 
-function! s:chop(o,c) abort
-  let o = a:o
-  let c = a:c
+" A line number from a mark ("'[") or a line positioning command ("12G").
+" line('12') is not line 12.
+function! s:lnum(pos) abort
+  let pos = substitute(a:pos, '\v^(\d+)G$', '\1', '')
+  return pos =~# '^\d\+$' ? str2nr(pos) : line(pos)
+endfunction
+
+function! s:chop(o, c) abort
+  let start = s:lnum(a:o)
+  let end = s:lnum(a:c)
+  if start < 1 || end < start
+    return
+  endif
+  " Chopping changes the line count; track it to reindent the result.
+  let height = line('$')
 
   if !get(b:, 'latexindent', g:latexindent)
-    let gdefault = &gdefault
-    set gdefault&
-
-    " convert line positioning commands to line ranges
-    let o = substitute(o, '\(\d\+\)G$', '\1', '')
-    let c = substitute(c, '\(\d\+\)G$', '\1', '')
-
-    " line('1') is not line 1; a numeric ChopSentences bound is already a number.
-    let start = o =~# '^\d\+$' ? str2nr(o) : line(o)
-    let end = c =~# '^\d\+$' ? str2nr(c) : line(c)
-    if start >= 1 && end >= start
-      " A newline match runs past the last line. A blank line stops it.
-      let guard = end < line('$')
-      if guard
-        call append(end, '')
-      endif
-      let height = line('$')
-      exe 'silent keepjumps keeppatterns ' . start . ',' . end . 'substitute/\v(\S)\s*\n\s*(\S)/\1 \2/geI'
-      let end = end - (height - line('$'))
-      if guard
-        exe 'silent keepjumps ' . (end + 1) . 'delete _'
-      endif
-      exe 'silent keepjumps keeppatterns ' . start . ',' . end . 'substitute/\C\v' . s:regex . '/\r/geI'
-    endif
-
-    let &gdefault = gdefault
+    call s:split(start, end)
   else
-    try
-      let formatexpr = &l:formatexpr
-      let formatprg = &l:formatprg
-
-      let &l:formatprg = 'latexindent'
-              \ . ' ' . s:latexindent_options . ' ' . get(b:, 'latexindent_options', g:latexindent_options)
-              \ . ' ' . '--yaml=' . '"' . s:latexindent_yaml_options . ',' . get(b:, 'latexindent_yaml_options', g:latexindent_yaml_options) . '"'
-              \ . ' ' . '2>' . s:nul
-      let &l:formatexpr = ''
-      exe 'silent keepjumps normal! ' . o . 'gq' . c
-
-      " error handling
-      if v:shell_error > 0
-        silent undo
-        redraw
-        echomsg 'Formatprg "' . &l:formatprg . '" exited with status ' . v:shell_error . '.'
-      endif
-      " end of error handling
-    finally
-      if has('win32') | redraw | endif
-      let &l:formatprg = formatprg
-      let &l:formatexpr = formatexpr
-    endtry
+    call s:latexindent(start, end)
   endif
 
+  let end = max([start, end + line('$') - height])
   let equalprg = &l:equalprg
-  let &l:equalprg = ''
-  exe 'silent keepjumps normal! ' . o . '=' . c
-  let &l:equalprg = equalprg
+  try
+    let &l:equalprg = ''
+    exe 'silent keepjumps normal! ' . start . 'G=' . end . 'G'
+  finally
+    let &l:equalprg = equalprg
+  endtry
+endfunction
+
+function! s:split(start, end) abort
+  let end = a:end
+  let gdefault = &gdefault
+  try
+    set gdefault&
+    " A newline match runs past the last line. A blank line stops it.
+    let guard = end < line('$')
+    if guard
+      call append(end, '')
+    endif
+    let height = line('$')
+    exe 'silent keepjumps keeppatterns ' . a:start . ',' . end . 'substitute/\v(\S)\s*\n\s*(\S)/\1 \2/geI'
+    let end -= height - line('$')
+    if guard
+      exe 'silent keepjumps ' . (end + 1) . 'delete _'
+    endif
+    exe 'silent keepjumps keeppatterns ' . a:start . ',' . end . 'substitute/\C\v' . s:regex() . '/\r/geI'
+  finally
+    let &gdefault = gdefault
+  endtry
+endfunction
+
+function! s:latexindent(start, end) abort
+  if !isdirectory(s:cruft_folder)
+    call mkdir(s:cruft_folder, 'p')
+  endif
+  let formatexpr = &l:formatexpr
+  let formatprg = &l:formatprg
+  try
+    let &l:formatprg = 'latexindent'
+          \ . ' ' . s:latexindent_options . ' ' . get(b:, 'latexindent_options', g:latexindent_options)
+          \ . ' ' . '--yaml=' . '"' . s:latexindent_yaml_options . ',' . get(b:, 'latexindent_yaml_options', g:latexindent_yaml_options) . '"'
+          \ . ' ' . '2>' . s:nul
+    let &l:formatexpr = ''
+    let changenr = changenr()
+    let error = ''
+    try
+      exe 'silent keepjumps normal! ' . a:start . 'Ggq' . a:end . 'G'
+      if v:shell_error > 0
+        let error = 'exited with status ' . v:shell_error
+      endif
+    catch
+      let error = 'failed: ' . v:exception
+    endtry
+
+    if !empty(error)
+      if changenr() != changenr
+        silent undo
+      endif
+      redraw
+      echomsg 'Formatprg "' . &l:formatprg . '" ' . error . '.'
+    endif
+  finally
+    if has('win32') | redraw | endif
+    let &l:formatprg = formatprg
+    let &l:formatexpr = formatexpr
+  endtry
 endfunction
