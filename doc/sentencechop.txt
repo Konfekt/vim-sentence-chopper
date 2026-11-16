@@ -73,13 +73,12 @@ its global variant default to
 Its buffer-local variant defaults in Markdown files to
 
 >
-
-  let b:opening_delimiters = g:opening_delimiters . '*_'
-  let b:closing_delimiters = g:closing_delimiters . '*_'
+  let b:opening_delimiters = g:opening_delimiters . '_*'
+  let b:closing_delimiters = g:closing_delimiters . '_*'
 <
 
 The global variable *g:latexindent* and its buffer-local analog *b:latexindent*
-defines whether latexindent [0] should be used; by default, if available,
+defines whether latexindent [1] should be used; by default, if available,
 latexindent is used in TeX (and pandoc) files only. (That is, `b:latexindent`
 is enabled in all buffers of these file types.)
 
@@ -129,15 +128,18 @@ put every sentence in parentheses onto its proper line, add to your vimrc
 <
 
 Mappings ~
-
+                                                  *<Plug>(ChopSentences)*
 To change mappings, for example, to use zy instead of gb, add the lines
 
 >
-  nmap zy *<plug>(ChopSentences)*
-  xmap zy *<plug>(ChopSentences)*
+  nmap zy <Plug>(ChopSentences)
+  xmap zy <Plug>(ChopSentences)
 <
 
 to your vimrc.
+
+After chopping, the resulting lines are reindented by |=| (using
+'indentexpr' or C-indenting, ignoring 'equalprg').
 
 Hints ~
 
@@ -149,7 +151,7 @@ To replace (or delete, or any other operation by Vim) up to the next punctuation
 
 to your vimrc! Then, for example, hitting "c." will change and "d." delete the
 text up to the next punctuation mark. Say "c." turns "That's*it, Sir.",
-where "*" stands for the cursor position, into "That's*, Sir".
+where "*" stands for the cursor position, into "That's*, Sir."
 This can be thought of as a counterpart to Vim's built-in C and D commands
 for prose.
 
@@ -160,4 +162,4 @@ that highlights and normalizes Unicode homoglyphs.
 
 [1] https://github.com/cmhughes/latexindent.pl
 
->:tw=78:ts=2:sts=2:sw=2:ft=help:norl
+ vim:tw=78:ts=2:sts=2:sw=2:ft=help:norl

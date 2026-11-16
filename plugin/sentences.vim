@@ -15,13 +15,13 @@ scriptencoding utf-8
 "
 " 0. Faites ce que vous voulez, j'en ai RIEN À BRANLER.
 
-if exists('g:loaded_sentence_chopper') || &cp
+if exists('g:loaded_sentence_chopper') || &compatible
   finish
 endif
 let g:loaded_sentence_chopper = 1
 
-let s:keepcpo         = &cpo
-set cpo&vim
+let s:keepcpo = &cpoptions
+set cpoptions&vim
 
 " ------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ endif
 
 augroup SentenceChopper
   autocmd!
-  autocmd FileType markdown,pandoc 
+  autocmd FileType markdown,pandoc
         \ let b:opening_delimiters = get(b:, 'opening_delimiters', g:opening_delimiters . '_*')|
         \ let b:closing_delimiters = get(b:, 'closing_delimiters', g:closing_delimiters . '_*')
 augroup end
@@ -53,14 +53,14 @@ endif
 
 command! -range=% -bar ChopSentences call sentences#chop('<line1>G', '<line2>G')
 
-nnoremap <silent> <plug>(ChopSentences) :<C-U>set  opfunc=sentences#chop<CR>g@
-xnoremap <silent> <plug>(ChopSentences) :<C-U>call sentences#chop("'<", "'>")<CR>
+nnoremap <silent> <Plug>(ChopSentences) :<C-U>set opfunc=sentences#chop<CR>g@
+xnoremap <silent> <Plug>(ChopSentences) :<C-U>call sentences#chop("'<", "'>")<CR>
 
 if !hasmapto('<Plug>(ChopSentences)', 'n')
-  silent! nmap <unique> gb <plug>(ChopSentences)
+  silent! nmap <unique> gb <Plug>(ChopSentences)
 endif
 if !hasmapto('<Plug>(ChopSentences)', 'x')
-  silent! xmap <unique> gb <plug>(ChopSentences)
+  silent! xmap <unique> gb <Plug>(ChopSentences)
 endif
 
 if maparg('gb', 'n') ==# '<Plug>(ChopSentences)'
@@ -70,5 +70,5 @@ if maparg('gb', 'n') ==# '<Plug>(ChopSentences)'
 endif
 
 " ------------------------------------------------------------------------------
-let &cpo= s:keepcpo
+let &cpoptions = s:keepcpo
 unlet s:keepcpo
