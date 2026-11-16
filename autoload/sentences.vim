@@ -1,10 +1,5 @@
 scriptencoding utf-8
 
-if g:latexindent && !executable('latexindent')
-  echoerr 'sentence-chopper: Please ensure that the path to the folder that contains the latexindent executable is included in the value of the $PATH variable!'
-  let g:latexindent = 0
-endif
-
 if !exists('g:latexindent_yaml_options')
   let g:latexindent_yaml_options = ''
        \ . 'modifyLineBreaks:items:ItemStartsOnOwnLine: 1' . ','
@@ -94,14 +89,19 @@ unlet s:hyphenated_suffix s:alnum_suffix s:upper_word s:capitalized_word
 " marks may change at any time, so build the pattern per call and cache it.
 let s:regex_cache = {}
 
+" A collection matching any of the characters in a:chars literally.
+function! s:collection(chars) abort
+  return '[' . escape(a:chars, '[]-\^') . ']'
+endfunction
+
 function! s:regex() abort
   let open = get(b:, 'opening_delimiters', g:opening_delimiters)
   let close = get(b:, 'closing_delimiters', g:closing_delimiters)
   let key = join([open, close, g:punctuation_marks], "\n")
   if !has_key(s:regex_cache, key)
-    let open_quote  = '[' . escape(open, '[]-\') . ']' . '{,3}'
-    let close_quote = '[' . escape(close, '[]-\') . ']' . '{,3}'
-    let punctuation = '[' . g:punctuation_marks . ']'
+    let open_quote  = s:collection(open) . '{,3}'
+    let close_quote = s:collection(close) . '{,3}'
+    let punctuation = s:collection(g:punctuation_marks)
     " '?' and '!' split after one word. '.' splits only before a capital, so
     " "Fig. 1" and "vs. the" stay, and not after the abbreviations above.
     let s:regex_cache[key] = '%('
@@ -151,10 +151,10 @@ function! s:chop(o, c) abort
   " Chopping changes the line count; track it to reindent the result.
   let height = line('$')
 
-  if !get(b:, 'latexindent', g:latexindent)
-    call s:split(start, end)
-  else
+  if s:use_latexindent()
     call s:latexindent(start, end)
+  else
+    call s:split(start, end)
   endif
 
   let end = max([start, end + line('$') - height])
@@ -165,6 +165,21 @@ function! s:chop(o, c) abort
   finally
     let &l:equalprg = equalprg
   endtry
+endfunction
+
+" Whether to chop by latexindent; warn and fall back to the built-in
+" splitting if it is wanted but cannot be found in $PATH.
+function! s:use_latexindent() abort
+  if !get(b:, 'latexindent', g:latexindent)
+    return 0
+  endif
+  if executable('latexindent')
+    return 1
+  endif
+  echohl WarningMsg
+  echomsg 'sentence-chopper: latexindent not found in $PATH; chopping without it.'
+  echohl None
+  return 0
 endfunction
 
 function! s:split(start, end) abort
