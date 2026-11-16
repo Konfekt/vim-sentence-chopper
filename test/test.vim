@@ -1,5 +1,6 @@
 " Headless tests: vim -Nu NONE -es -S test/test.vim (or nvim --headless).
 " Writes test/results.txt and exits non-zero on failure.
+" vint: -ProhibitCommandRelyOnUser (mappings are exercised on purpose)
 scriptencoding utf-8
 let s:root = fnamemodify(expand('<sfile>:p'), ':h:h')
 let &runtimepath = s:root . ',' . &runtimepath
@@ -128,6 +129,34 @@ function! Test_latexindent() abort
   finally
     let $PATH = saved
     let $FAKE_LATEXINDENT_FAIL = ''
+  endtry
+endfunction
+
+" Characters special inside a collection are taken literally.
+function! Test_punctuation_marks_special_characters() abort
+  let saved = g:punctuation_marks
+  let g:punctuation_marks = '?-!'
+  try
+    call s:reset(['One - two? Three'])
+    ChopSentences
+    call assert_equal(['One - two?', 'Three'], getline(1, '$'))
+  finally
+    let g:punctuation_marks = saved
+  endtry
+endfunction
+
+" latexindent wanted but missing: fall back to the built-in splitting.
+function! Test_latexindent_missing_falls_back() abort
+  let saved = $PATH
+  let $PATH = s:root . '/test/empty-path-dir'
+  try
+    call s:reset(['One. Two.'])
+    let b:latexindent = 1
+    let msg = execute('ChopSentences')
+    call assert_equal(['One.', 'Two.'], getline(1, '$'))
+    call assert_match('latexindent not found', msg)
+  finally
+    let $PATH = saved
   endtry
 endfunction
 

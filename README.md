@@ -69,6 +69,7 @@ Its buffer-local variant defaults in Markdown files to
 The global variable `g:latexindent` and its buffer-local analog `b:latexindent` defines whether [latexindent](https://github.com/cmhughes/latexindent.pl) should be used;
 by default, if available, `latexindent` is used in TeX (and [pandoc](https://github.com/vim-pandoc/vim-pandoc) files) only.
 (That is, `b:latexindent` is enabled in all buffers of these file types.)
+If `latexindent` is to be used but cannot be found in `$PATH`, a warning is shown and the sentences are chopped without it.
 
 The global  variable `g:latexindent_options` (and its buffer-local analog `b:latexindent_options`) defines the command-line options passed to `latexindent` as listed by `latexindent -h`;
 the buffer-local variable is undefined and the global variable is by default set to

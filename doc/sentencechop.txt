@@ -80,7 +80,9 @@ Its buffer-local variant defaults in Markdown files to
 The global variable *g:latexindent* and its buffer-local analog *b:latexindent*
 defines whether latexindent [1] should be used; by default, if available,
 latexindent is used in TeX (and pandoc) files only. (That is, `b:latexindent`
-is enabled in all buffers of these file types.)
+is enabled in all buffers of these file types.) If latexindent is to be used
+but cannot be found in $PATH, a warning is shown and the sentences are chopped
+without it.
 
 The variable *g:latexindent_options* (and its buffer-local analog *b:latexindent_options*)
 defines the command-line options passed to latexindent as listed by latexindent
