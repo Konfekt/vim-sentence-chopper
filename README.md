@@ -43,7 +43,7 @@ If you want to include `,` as a punctuation mark, then you might want to add suc
 ```vim
 augroup vimrcSpell
   autocmd!
-    autocmd BufNew,BufRead * 
+    autocmd BufNew,BufRead *
           \ if &l:modifiable && !&l:readonly && &l:spell | setlocal cinoptions+=+0 | endif
     autocmd OptionSet spell
           \ if v:option_new | setlocal cinoptions+=+0 | else| setlocal cinoptions-=+0 | endif
@@ -62,8 +62,8 @@ its global variant default to
 Its buffer-local variant defaults in Markdown files to
 
 ```vim
-  let g:opening_delimiters = g:opening_delimiters . '*_'
-  let b:closing_delimiters = g:closing_delimiters . '*_'
+  let b:opening_delimiters = g:opening_delimiters . '_*'
+  let b:closing_delimiters = g:closing_delimiters . '_*'
 ```
 
 The global variable `g:latexindent` and its buffer-local analog `b:latexindent` defines whether [latexindent](https://github.com/cmhughes/latexindent.pl) should be used;
@@ -121,6 +121,8 @@ To change mappings, for example, to use `zy` instead of `gb`, add the lines
 
 to your `vimrc`.
 
+After chopping, the resulting lines are reindented by `=` (using `indentexpr` or C-indenting, ignoring `equalprg`).
+
 # Hints
 
 To replace (or delete, or any other operation by Vim) up to the next punctuation mark, say `.` and `,;:!?`, add
@@ -135,6 +137,10 @@ Say `c.` turns `That's*it, Sir.`, where `*` stands for the cursor position, into
 This can be thought of as a counterpart to Vim's built-in `C` and `D` commands for prose.
 
 To normalize [Unicode Homoglyphs](https://www.irongeek.com/homoglyph-attack-generator.php), for example, of white spaces and punctuation marks, before chopping sentences, see the Vim plug-in [vim-unicode-homoglyphs](https://github.com/Konfekt/vim-unicode-homoglyphs) that highlights and normalizes Unicode homoglyphs.
+
+# Tests
+
+Run `test/run.sh` to test the plug-in headlessly in Vim and Neovim.
 
 # Related
 

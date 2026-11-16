@@ -1,0 +1,4 @@
+#!/bin/sh
+# Stand-in for latexindent: one sentence per line, or fail on request.
+[ -n "$FAKE_LATEXINDENT_FAIL" ] && exit 3
+sed 's/\([.?!]\) \+/\1\n/g'
